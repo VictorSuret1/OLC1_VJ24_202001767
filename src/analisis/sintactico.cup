@@ -17,23 +17,27 @@ import expresiones.Aritmeticas;
 import expresiones.OperadoresAritmeticos;
 import expresiones.Relacionales;
 import expresiones.OperadoresRelacionales;
-
+import excepciones.Errores;
 // parser
 parser code
 {:
     scanner s;
     parser(scanner s){this.s = s;}
+
+    public LinkedList<Errores> listaErrores = new LinkedList<>();
     
     public void syntax_error(Symbol s){
-        System.out.println("Error Sintactico en la linea " +
-        (s.left) + " y columna " + (s.right) +
-        ". No se esperaba el componente: " + (s.value) + ".");
+        listaErrores.add(new Errores("SINTACTICO RECUPERABLE",
+                        "No se esperaba el componente "+s.value,
+                        s.left,
+                        s.right));
     }
 
     public void unrecovered_syntax_error (Symbol s){
-        System.out.println("Error Sintactico no recuperable en la linea" +
-        (s.left) + " y columna " + (s.right) +
-        ". No se esperaba el componente: " + (s.value) + ".");
+        listaErrores.add(new Errores("SINTACTICO NO RECUPERABLE",
+                        "No se esperaba el componente "+s.value,
+                        s.left,
+                        s.right));
     }
 
 :}
@@ -43,13 +47,14 @@ action code
 :}
 
 //terminales
-terminal String CADENA, ENTERO, DECIMAL;
+terminal String CADENA, ENTERO, DECIMAL,CARACTER;
 terminal FINCADENA, PRINTLN;
 terminal PAR1, PAR2, MAS, MENOS, UMENOS, MULTIPLICACION, DIVISION,MODULO,POTENCIA;
 terminal IGUAL,EQUALS;
-terminal ADMIRACION ,NOTEQUALS;
+terminal NOTEQUALS;
 terminal MENOR, MENORQUE;
 terminal MAYOR, MAYORQUE;
+terminal OR,AND,XOR,NOT;
 
 
 
@@ -58,7 +63,10 @@ nonterminal LinkedList<Instruccion> INICIO, INSTRUCCIONES;
 nonterminal Instruccion INSTRUCCION;
 nonterminal Instruccion EXPRESION;
 
-//precedence left or -> and -> 
+precedence left OR;
+precedence left AND;
+precedence left XOR;
+precedence left NOT;
 precedence left EQUALS,NOTEQUALS;
 precedence left MENOR, MENORQUE, MAYOR, MAYORQUE;
 
@@ -77,6 +85,8 @@ INSTRUCCIONES ::= INSTRUCCIONES:a INSTRUCCION:b     {: RESULT = a; RESULT.add(b)
 ;
 
 INSTRUCCION ::= PRINTLN PAR1 EXPRESION:a PAR2 FINCADENA      {:   RESULT = new Print(a, aleft, aright);   :}
+                | error FINCADENA
+                | error 
 ;
 
 EXPRESION ::= MENOS EXPRESION:a             {:   RESULT = new Aritmeticas(a, OperadoresAritmeticos.NEGACION, aleft, aright);   :} %prec UMENOS
@@ -95,4 +105,5 @@ EXPRESION ::= MENOS EXPRESION:a             {:   RESULT = new Aritmeticas(a, Ope
             | ENTERO:a      {:   RESULT = new Nativo(Integer.parseInt(a), new Tipo(tipoDato.ENTERO), aleft, aright );   :}
             | DECIMAL:a     {:   RESULT = new Nativo(new Double(a), new Tipo(tipoDato.DECIMAL), aleft, aright );   :}
             | CADENA:a      {:   RESULT = new Nativo(a, new Tipo(tipoDato.CADENA), aleft, aright );   :}
+            | CARACTER:a      {:   RESULT = new Nativo(a, new Tipo(tipoDato.CARACTER), aleft, aright );   :}
 ;

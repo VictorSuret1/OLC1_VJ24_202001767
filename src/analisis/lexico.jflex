@@ -2,17 +2,20 @@ package analisis;
 
 //importaciones
 import java_cup.runtime.Symbol;
+import java.util.LinkedList;
+import excepciones.Errores;
 
 %%
 
 //codigo de usuario
 %{
-
+    public static LinkedList<Errores> listaErrores = new LinkedList<>();
 %}
 
 %init{
     yyline = 1;
     yycolumn = 1;
+listaErrores = new LinkedList<>();
 %init}
 
 //caracteristicas de jflex
@@ -38,7 +41,11 @@ IGUAL = "="
 POTENCIA = "**"
 FINCADENA=";"
 
-ADMIRACION = "!"
+OR = "||"
+AND = "&&"
+XOR = "^"
+NOT = "!"
+
 NOTEQUALS = "!="
 MENOR="<"
 MAYOR=">"
@@ -46,10 +53,13 @@ MAYORQUE=">="
 MENORQUE = "<="
 
 
+
 BLANCOS=[\ \r\t\f\n]+
 ENTERO=[0-9]+
 DECIMAL=[0-9]+"."[0-9]+
 CADENA = [\"]([^\"])*[\"]
+CARACTER = [\']([^\'])*[\']
+
 
 //palabras reservadas
 PRINTLN="PRINTLN"
@@ -66,6 +76,12 @@ PRINTLN="PRINTLN"
     return new Symbol(sym.CADENA, yyline, yycolumn,cadena);
     }
 
+<YYINITIAL> {CARACTER} {
+    String caracter = yytext();
+    caracter = caracter.substring(1, caracter.length()-1);
+    return new Symbol(sym.CARACTER, yyline, yycolumn,caracter);
+    }
+
 <YYINITIAL> {FINCADENA} {return new Symbol(sym.FINCADENA, yyline, yycolumn,yytext());}
 <YYINITIAL> {PAR1} {return new Symbol(sym.PAR1, yyline, yycolumn,yytext());}
 <YYINITIAL> {PAR2} {return new Symbol(sym.PAR2, yyline, yycolumn,yytext());}
@@ -80,7 +96,12 @@ PRINTLN="PRINTLN"
 <YYINITIAL> {IGUAL} {return new Symbol(sym.IGUAL, yyline, yycolumn,yytext());}
 <YYINITIAL> {NOTEQUALS} {return new Symbol(sym.NOTEQUALS, yyline, yycolumn,yytext());}
 
-<YYINITIAL> {ADMIRACION} {return new Symbol(sym.ADMIRACION, yyline, yycolumn,yytext());}
+<YYINITIAL> {OR} {return new Symbol(sym.OR, yyline, yycolumn,yytext());}
+<YYINITIAL> {AND} {return new Symbol(sym.AND, yyline, yycolumn,yytext());}
+<YYINITIAL> {XOR} {return new Symbol(sym.XOR, yyline, yycolumn,yytext());}
+<YYINITIAL> {NOT} {return new Symbol(sym.NOT, yyline, yycolumn,yytext());}
+
+
 <YYINITIAL> {MENOR} {return new Symbol(sym.MENOR, yyline, yycolumn,yytext());}
 <YYINITIAL> {MAYOR} {return new Symbol(sym.MAYOR, yyline, yycolumn,yytext());}
 <YYINITIAL> {MENOR} {return new Symbol(sym.MENOR, yyline, yycolumn,yytext());}
@@ -89,3 +110,7 @@ PRINTLN="PRINTLN"
 
 
 <YYINITIAL> {BLANCOS} {}
+
+<YYINITIAL> . {listaErrores.add(new Errores("LEXICO","El caracter "+
+                yytext()+" NO pertenece al lenguaje", yyline, yycolumn));
+}

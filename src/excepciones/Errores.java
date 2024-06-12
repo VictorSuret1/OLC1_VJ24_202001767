@@ -9,10 +9,10 @@ package excepciones;
  * @author VictorS
  */
 public class Errores {
-    private String tipo;
-    private String desc;
-    private int linea;
-    private int columna;
+    public String tipo;
+    public String desc;
+    public int linea;
+    public int columna;
 
     public Errores(String tipo, String desc, int linea, int columna) {
         this.tipo = tipo;

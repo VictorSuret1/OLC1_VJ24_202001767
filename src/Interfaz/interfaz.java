@@ -7,6 +7,7 @@ package Interfaz;
 import abstracto.Instruccion;
 import analisis.parser;
 import analisis.scanner;
+import excepciones.Errores;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,6 +27,8 @@ import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import simbolo.Arbol;
 import simbolo.tablaSimbolos;
+import reportes.reporteErrores;
+import static reportes.reporteErrores.crearReporte;
 
 /**
  *
@@ -145,6 +148,11 @@ public class interfaz extends javax.swing.JFrame {
         jMenu4.setText("REPORTES");
 
         jMenuItem5.setText("ERRORES");
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
         jMenu4.add(jMenuItem5);
 
         jMenuItem6.setText("AST");
@@ -260,21 +268,42 @@ try {
             var tabla = new tablaSimbolos();
             tabla.setNombre("GLOBAL");
             ast.setConsola("");
+            LinkedList<Errores> lista = new LinkedList<>();
+            lista.addAll (s.listaErrores);
+            lista.addAll(p.listaErrores);
             for (var a : ast.getInstrucciones()) {
+                if (a == null) {
+                    continue;
+                }
+
                 var res = a.interpretar(ast, tabla);
+                if (res instanceof Errores) {
+                    lista.add((Errores) res);
+                }
             }
             System.out.println(ast.getConsola());
-            jTextArea2.setText(ast.getConsola());
+
+            for (var i : lista) {
+                System.out.println(i);
+            }
+            
+                 crearReporte(lista);
         } catch (Exception ex) {
             System.out.println("Algo salio mal");
             System.out.println(ex);
         }
     
 
-
+       
 
 
     }//GEN-LAST:event_jMenuItem8ActionPerformed
+
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+
+        
+        
+    }//GEN-LAST:event_jMenuItem5ActionPerformed
 
     /**
      * @param args the command line arguments

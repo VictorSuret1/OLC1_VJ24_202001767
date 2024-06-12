@@ -77,59 +77,68 @@ public class Aritmeticas extends Instruccion {
         };
     }
 
-    public Object suma(Object op1, Object op2) {
-        var tipo1 = this.operando1.tipo.getTipo();
-        var tipo2 = this.operando2.tipo.getTipo();
+public Object suma(Object op1, Object op2) {
+    var tipo1 = this.operando1.tipo.getTipo();
+    var tipo2 = this.operando2.tipo.getTipo();
 
-        switch (tipo1) {
-            case tipoDato.ENTERO -> {
-                switch (tipo2) {
-                    case tipoDato.ENTERO -> {
-                        this.tipo.setTipo(tipoDato.ENTERO);
-                        return (int) op1 + (int) op2;
-                    }
-                    case tipoDato.DECIMAL -> {
-                        this.tipo.setTipo(tipoDato.DECIMAL);
-                        return (int) op1 + (double) op2;
-                    }
-                    case tipoDato.CADENA -> {
-                        this.tipo.setTipo(tipoDato.CADENA);
-                        return op1.toString() + op2.toString();
-                    }
-                    default -> {
-                        return new Errores("SEMANTICO", "Suma erronea", this.linea, this.col);
-                    }
+    switch (tipo1) {
+        case tipoDato.ENTERO -> {
+            switch (tipo2) {
+                case tipoDato.ENTERO -> {
+                    this.tipo.setTipo(tipoDato.ENTERO);
+                    return (int) op1 + (int) op2;
                 }
-            }
-            case tipoDato.DECIMAL -> {
-                switch (tipo2) {
-                    case tipoDato.ENTERO -> {
-                        this.tipo.setTipo(tipoDato.DECIMAL);
-                        return (double) op1 + (int) op2;
-                    }
-                    case tipoDato.DECIMAL -> {
-                        this.tipo.setTipo(tipoDato.DECIMAL);
-                        return (double) op1 + (double) op2;
-                    }
-                    case tipoDato.CADENA -> {
-                        this.tipo.setTipo(tipoDato.CADENA);
-                        return op1.toString() + op2.toString();
-                    }
-                    default -> {
-                        return new Errores("SEMANTICO", "Suma erronea", this.linea, this.col);
-                    }
+                case tipoDato.DECIMAL -> {
+                    this.tipo.setTipo(tipoDato.DECIMAL);
+                    return (int) op1 + (double) op2;
                 }
-            }
-            case tipoDato.CADENA -> {
-                this.tipo.setTipo(tipoDato.CADENA);
-                return op1.toString() + op2.toString();
-            }
-            default -> {
-                return new Errores("SEMANTICO", "Suma erronea", this.linea, this.col);
-
+                case tipoDato.CADENA -> {
+                    this.tipo.setTipo(tipoDato.CADENA);
+                    return op1.toString() + op2.toString();
+                }
+                case tipoDato.CARACTER -> {
+                    this.tipo.setTipo(tipoDato.CARACTER);
+                    return (int) op1 + (int) ((String)op2).charAt(0); // Convertir el primer carácter de la cadena a entero (valor ASCII)
+                    
+                }
+                
+                default -> {
+                    return new Errores("SEMANTICO", "Suma erronea", this.linea, this.col);
+                }
             }
         }
+        case tipoDato.DECIMAL -> {
+            switch (tipo2) {
+                case tipoDato.ENTERO -> {
+                    this.tipo.setTipo(tipoDato.DECIMAL);
+                    return (double) op1 + (int) op2;
+                }
+                case tipoDato.DECIMAL -> {
+                    this.tipo.setTipo(tipoDato.DECIMAL);
+                    return (double) op1 + (double) op2;
+                }
+                case tipoDato.CADENA -> {
+                    this.tipo.setTipo(tipoDato.CADENA);
+                    return op1.toString() + op2.toString();
+                }
+                case tipoDato.CARACTER -> {
+                    this.tipo.setTipo(tipoDato.DECIMAL);
+                    return (double) op1 + (int) ((String) op2).charAt(0); // Convertir el primer carácter de la cadena a entero (valor ASCII)
+                }
+                default -> {
+                    return new Errores("SEMANTICO", "Suma erronea", this.linea, this.col);
+                }
+            }
+        }
+        case tipoDato.CADENA -> {
+            this.tipo.setTipo(tipoDato.CADENA);
+            return op1.toString() + op2.toString();
+        }
+        default -> {
+            return new Errores("SEMANTICO", "Suma erronea", this.linea, this.col);
+        }
     }
+}
 
     public Object negacion(Object op1) {
         var opU = this.operandoUnico.tipo.getTipo();
@@ -325,19 +334,19 @@ public Object division(Object op1, Object op2){
 }
 
 
-public Object modulo(Object op1, Object op2){
+public Object modulo(Object op1, Object op2) {
     var type1 = this.operando1.tipo.getTipo();
     var type2 = this.operando2.tipo.getTipo();
-    switch (type1){
+    switch (type1) {
         case tipoDato.ENTERO -> {
-            switch (type2){
+            switch (type2) {
                 case tipoDato.ENTERO -> {
                     if ((int) op2 == 0) {
                         System.out.println("error modulo 0");
                         return new Errores("SEMANTICO", "MODULO POR CERO", this.linea, this.col);
                     }
-                    this.tipo.setTipo(tipoDato.ENTERO);
-                    return (int) op1 % (int) op2;
+                    this.tipo.setTipo(tipoDato.DECIMAL);
+                    return (double) ((int) op1 % (int) op2);
                 }
                 case tipoDato.DECIMAL -> {
                     if ((double) op2 == 0.0) {
@@ -345,7 +354,7 @@ public Object modulo(Object op1, Object op2){
                         return new Errores("SEMANTICO", "MODULO POR CERO", this.linea, this.col);
                     }
                     this.tipo.setTipo(tipoDato.DECIMAL);
-                    return (int) op1 % (double) op2;
+                    return (double) ((int) op1 % (double) op2);
                 }
                 default -> {
                     return new Errores("SEMANTICO", "EL MODULO ES ERRONEO O ESTA MAL ESCRITO", this.linea, this.col);
@@ -353,14 +362,14 @@ public Object modulo(Object op1, Object op2){
             }
         }
         case tipoDato.DECIMAL -> {
-            switch (type2){
+            switch (type2) {
                 case tipoDato.ENTERO -> {
                     if ((int) op2 == 0) {
                         System.out.println("error modulo 0");
                         return new Errores("SEMANTICO", "MODULO POR CERO", this.linea, this.col);
                     }
                     this.tipo.setTipo(tipoDato.DECIMAL);
-                    return (double) op1 % (int) op2; 
+                    return (double) ((double) op1 % (int) op2);
                 }
                 case tipoDato.DECIMAL -> {
                     if ((double) op2 == 0.0) {
@@ -368,7 +377,7 @@ public Object modulo(Object op1, Object op2){
                         return new Errores("SEMANTICO", "MODULO POR CERO", this.linea, this.col);
                     }
                     this.tipo.setTipo(tipoDato.DECIMAL);
-                    return (double) op1 % (double) op2;
+                    return (double) ((double) op1 % (double) op2);
                 }
                 default -> {
                     return new Errores("SEMANTICO", "EL MODULO ES ERRONEO O ESTA MAL ESCRITO", this.linea, this.col);

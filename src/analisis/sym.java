@@ -8,36 +8,41 @@ package analisis;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int MENOS = 10;
+  public static final int AND = 25;
+  public static final int MENOS = 11;
   public static final int MENOR = 20;
-  public static final int MULTIPLICACION = 12;
+  public static final int MULTIPLICACION = 13;
   public static final int CADENA = 2;
-  public static final int IGUAL = 16;
-  public static final int FINCADENA = 5;
+  public static final int OR = 24;
+  public static final int IGUAL = 17;
+  public static final int FINCADENA = 6;
   public static final int DECIMAL = 4;
-  public static final int DIVISION = 13;
-  public static final int POTENCIA = 15;
+  public static final int DIVISION = 14;
+  public static final int NOT = 27;
+  public static final int POTENCIA = 16;
   public static final int MAYORQUE = 23;
-  public static final int MODULO = 14;
-  public static final int UMENOS = 11;
+  public static final int MODULO = 15;
+  public static final int UMENOS = 12;
+  public static final int CARACTER = 5;
   public static final int NOTEQUALS = 19;
-  public static final int EQUALS = 17;
+  public static final int EQUALS = 18;
   public static final int MAYOR = 22;
   public static final int EOF = 0;
-  public static final int PRINTLN = 6;
+  public static final int PRINTLN = 7;
   public static final int MENORQUE = 21;
-  public static final int ADMIRACION = 18;
   public static final int error = 1;
-  public static final int PAR2 = 8;
-  public static final int PAR1 = 7;
+  public static final int PAR2 = 9;
+  public static final int PAR1 = 8;
+  public static final int XOR = 26;
   public static final int ENTERO = 3;
-  public static final int MAS = 9;
+  public static final int MAS = 10;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
   "CADENA",
   "ENTERO",
   "DECIMAL",
+  "CARACTER",
   "FINCADENA",
   "PRINTLN",
   "PAR1",
@@ -51,12 +56,15 @@ public class sym {
   "POTENCIA",
   "IGUAL",
   "EQUALS",
-  "ADMIRACION",
   "NOTEQUALS",
   "MENOR",
   "MENORQUE",
   "MAYOR",
-  "MAYORQUE"
+  "MAYORQUE",
+  "OR",
+  "AND",
+  "XOR",
+  "NOT"
   };
 }
 
