@@ -1,0 +1,98 @@
+package analisis;
+
+//importaciones
+import java_cup.runtime.Symbol;
+import java.util.LinkedList;
+import abstracto.Instruccion;
+import simbolo.Tipo;
+import simbolo.tipoDato;
+
+
+//instrucciones
+import instrucciones.Print;
+
+//expresiones
+import expresiones.Nativo;
+import expresiones.Aritmeticas;
+import expresiones.OperadoresAritmeticos;
+import expresiones.Relacionales;
+import expresiones.OperadoresRelacionales;
+
+// parser
+parser code
+{:
+    scanner s;
+    parser(scanner s){this.s = s;}
+    
+    public void syntax_error(Symbol s){
+        System.out.println("Error Sintactico en la linea " +
+        (s.left) + " y columna " + (s.right) +
+        ". No se esperaba el componente: " + (s.value) + ".");
+    }
+
+    public void unrecovered_syntax_error (Symbol s){
+        System.out.println("Error Sintactico no recuperable en la linea" +
+        (s.left) + " y columna " + (s.right) +
+        ". No se esperaba el componente: " + (s.value) + ".");
+    }
+
+:}
+
+action code
+{:
+:}
+
+//terminales
+terminal String CADENA, ENTERO, DECIMAL;
+terminal FINCADENA, PRINTLN;
+terminal PAR1, PAR2, MAS, MENOS, UMENOS, MULTIPLICACION, DIVISION,MODULO,POTENCIA;
+terminal IGUAL,EQUALS;
+terminal ADMIRACION ,NOTEQUALS;
+terminal MENOR, MENORQUE;
+terminal MAYOR, MAYORQUE;
+
+
+
+//no terminales
+nonterminal LinkedList<Instruccion> INICIO, INSTRUCCIONES;
+nonterminal Instruccion INSTRUCCION;
+nonterminal Instruccion EXPRESION;
+
+//precedence left or -> and -> 
+precedence left EQUALS,NOTEQUALS;
+precedence left MENOR, MENORQUE, MAYOR, MAYORQUE;
+
+precedence left MAS,MENOS;
+precedence left MULTIPLICACION, DIVISION, MODULO;
+precedence left POTENCIA;
+precedence left UMENOS;
+
+start with INICIO;
+
+INICIO ::= INSTRUCCIONES:a      {:   RESULT = a;   :}
+;
+
+INSTRUCCIONES ::= INSTRUCCIONES:a INSTRUCCION:b     {: RESULT = a; RESULT.add(b); :}
+                | INSTRUCCION:a                   {: RESULT = new LinkedList<>(); RESULT.add(a); :}
+;
+
+INSTRUCCION ::= PRINTLN PAR1 EXPRESION:a PAR2 FINCADENA      {:   RESULT = new Print(a, aleft, aright);   :}
+;
+
+EXPRESION ::= MENOS EXPRESION:a             {:   RESULT = new Aritmeticas(a, OperadoresAritmeticos.NEGACION, aleft, aright);   :} %prec UMENOS
+            | EXPRESION:a MAS EXPRESION:b   {:   RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.SUMA, aleft, aright);   :}
+            | EXPRESION:a MENOS EXPRESION:b   {:   RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.RESTA, aleft, aright);   :}
+            | EXPRESION:a MULTIPLICACION EXPRESION:b   {:   RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.MULTIPLICACION, aleft, aright);   :}
+            | EXPRESION:a DIVISION EXPRESION:b   {:   RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.DIVISION, aleft, aright);   :}
+            | EXPRESION:a MODULO EXPRESION:b   {:   RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.MODULO, aleft, aright);   :}
+            | EXPRESION:a POTENCIA EXPRESION:b   {:   RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.POTENCIA, aleft, aright);   :}
+            | EXPRESION:a IGUAL IGUAL EXPRESION:b {:    RESULT = new Relacionales(a, b, OperadoresRelacionales.EQUALS, aleft, aright);    :}%prec EQUALS
+            | EXPRESION:a NOTEQUALS EXPRESION:b {:    RESULT = new Relacionales(a, b, OperadoresRelacionales.NOTEQUALS, aleft, aright);    :}
+            | EXPRESION:a MAYOR EXPRESION:b {:    RESULT = new Relacionales(a, b, OperadoresRelacionales.MAYOR, aleft, aright);    :}
+            | EXPRESION:a MAYORQUE EXPRESION:b {:    RESULT = new Relacionales(a, b, OperadoresRelacionales.MAYORQUE, aleft, aright);    :}
+            | EXPRESION:a MENOR EXPRESION:b {:    RESULT = new Relacionales(a, b, OperadoresRelacionales.MENOR, aleft, aright);    :}
+            | EXPRESION:a MENORQUE EXPRESION:b {:    RESULT = new Relacionales(a, b, OperadoresRelacionales.MENORQUE, aleft, aright);    :}
+            | ENTERO:a      {:   RESULT = new Nativo(Integer.parseInt(a), new Tipo(tipoDato.ENTERO), aleft, aright );   :}
+            | DECIMAL:a     {:   RESULT = new Nativo(new Double(a), new Tipo(tipoDato.DECIMAL), aleft, aright );   :}
+            | CADENA:a      {:   RESULT = new Nativo(a, new Tipo(tipoDato.CADENA), aleft, aright );   :}
+;
