@@ -40,6 +40,7 @@ MODULO = "%"
 IGUAL = "="
 POTENCIA = "**"
 FINCADENA=";"
+DOSP = ":"
 
 OR = "||"
 AND = "&&"
@@ -59,13 +60,34 @@ ENTERO=[0-9]+
 DECIMAL=[0-9]+"."[0-9]+
 CADENA = [\"]([^\"])*[\"]
 CARACTER = [\']([^\'])*[\']
-
+ID=[a-zA-z][a-zA-Z0-9_]*
 
 //palabras reservadas
 PRINTLN="PRINTLN"
+TRUE = "true"
+FALSE = "false"
+INT="int"
+DOUBLE="double"
+STRING="string"
+CHAR = "char"
+BOOL = "bool"
+CONST = "const"
+VAR = "var"
 
 %%
 <YYINITIAL> {PRINTLN} {return new Symbol(sym.PRINTLN, yyline, yycolumn,yytext());}
+<YYINITIAL> {TRUE} {return new Symbol(sym.TRUE, yyline, yycolumn,yytext());}
+<YYINITIAL> {FALSE} {return new Symbol(sym.FALSE, yyline, yycolumn,yytext());}
+<YYINITIAL> {INT} {return new Symbol(sym.INT, yyline, yycolumn,yytext());}
+<YYINITIAL> {DOUBLE} {return new Symbol(sym.DOUBLE, yyline, yycolumn,yytext());}
+<YYINITIAL> {STRING} {return new Symbol(sym.STRING, yyline, yycolumn,yytext());}
+<YYINITIAL> {CHAR} {return new Symbol(sym.CHAR, yyline, yycolumn,yytext());}
+<YYINITIAL> {BOOL} {return new Symbol(sym.BOOL, yyline, yycolumn,yytext());}
+<YYINITIAL> {CONST} {return new Symbol(sym.CONST, yyline, yycolumn,yytext());}
+<YYINITIAL> {VAR} {return new Symbol(sym.VAR, yyline, yycolumn,yytext());}
+
+
+<YYINITIAL> {ID} {return new Symbol(sym.ID, yyline, yycolumn,yytext());}
 
 <YYINITIAL> {DECIMAL} {return new Symbol(sym.DECIMAL, yyline, yycolumn,yytext());}
 <YYINITIAL> {ENTERO} {return new Symbol(sym.ENTERO, yyline, yycolumn,yytext());}
@@ -83,6 +105,7 @@ PRINTLN="PRINTLN"
     }
 
 <YYINITIAL> {FINCADENA} {return new Symbol(sym.FINCADENA, yyline, yycolumn,yytext());}
+<YYINITIAL> {DOSP} {return new Symbol(sym.DOSP, yyline, yycolumn,yytext());}
 <YYINITIAL> {PAR1} {return new Symbol(sym.PAR1, yyline, yycolumn,yytext());}
 <YYINITIAL> {PAR2} {return new Symbol(sym.PAR2, yyline, yycolumn,yytext());}
 
@@ -107,6 +130,8 @@ PRINTLN="PRINTLN"
 <YYINITIAL> {MENOR} {return new Symbol(sym.MENOR, yyline, yycolumn,yytext());}
 <YYINITIAL> {MAYORQUE} {return new Symbol(sym.MAYORQUE, yyline, yycolumn,yytext());}
 <YYINITIAL> {MENORQUE} {return new Symbol(sym.MENORQUE, yyline, yycolumn,yytext());}
+
+
 
 
 <YYINITIAL> {BLANCOS} {}

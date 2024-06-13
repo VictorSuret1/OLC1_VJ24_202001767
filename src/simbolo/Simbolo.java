@@ -12,6 +12,7 @@ public class Simbolo {
     private Tipo tipo;
     private String id;
     private Object valor;
+    private String mutabilidad;
 
     public Simbolo(Tipo tipo, String id) {
         this.tipo = tipo;
@@ -36,6 +37,10 @@ public class Simbolo {
         this.valor = valor;
     }
 
+    public void setMutabilidad(String mutabilidad) {
+        this.mutabilidad = mutabilidad;
+    }
+
     public Tipo getTipo() {
         return tipo;
     }
@@ -46,5 +51,9 @@ public class Simbolo {
 
     public Object getValor() {
         return valor;
+    }
+
+    public String getMutabilidad() {
+        return mutabilidad;
     }
 }

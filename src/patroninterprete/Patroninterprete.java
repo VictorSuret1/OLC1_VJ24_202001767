@@ -25,7 +25,9 @@ public class Patroninterprete {
                 
         try {
             String texto = ""
-                    + "imprimir(2==\"true\");  imprimir(%2+2==3.0+1.0);$ imprimir(\"hola\"==\"HoLa\");"
+                    + " const nota2 : double = 20.6;"
+                    + "println(nota2);"
+                    + "a : STRING;"
                     + "";
             scanner s = new scanner(new BufferedReader(new StringReader(texto)));
             parser p = new parser(s);
@@ -35,7 +37,7 @@ public class Patroninterprete {
             tabla.setNombre("GLOBAL");
             ast.setConsola("");
             LinkedList<Errores> lista = new LinkedList<>();
-            lista.addAll (s.listaErrores);
+            lista.addAll(s.listaErrores);
             lista.addAll(p.listaErrores);
             for (var a : ast.getInstrucciones()) {
                 if (a == null) {
@@ -52,16 +54,10 @@ public class Patroninterprete {
             for (var i : lista) {
                 System.out.println(i);
             }
-            
-                
+
         } catch (Exception ex) {
             System.out.println("Algo salio mal");
             System.out.println(ex);
         }
-        
-        
-        
-        
-        
     }
 }

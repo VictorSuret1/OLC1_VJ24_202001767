@@ -8,34 +8,45 @@ package analisis;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int AND = 25;
-  public static final int MENOS = 11;
-  public static final int MENOR = 20;
-  public static final int MULTIPLICACION = 13;
-  public static final int CADENA = 2;
-  public static final int OR = 24;
-  public static final int IGUAL = 17;
-  public static final int FINCADENA = 6;
-  public static final int DECIMAL = 4;
-  public static final int DIVISION = 14;
-  public static final int NOT = 27;
-  public static final int POTENCIA = 16;
-  public static final int MAYORQUE = 23;
-  public static final int MODULO = 15;
-  public static final int UMENOS = 12;
-  public static final int CARACTER = 5;
-  public static final int NOTEQUALS = 19;
-  public static final int EQUALS = 18;
-  public static final int MAYOR = 22;
-  public static final int EOF = 0;
-  public static final int PRINTLN = 7;
-  public static final int MENORQUE = 21;
-  public static final int error = 1;
-  public static final int PAR2 = 9;
-  public static final int PAR1 = 8;
-  public static final int XOR = 26;
+  public static final int PAR2 = 18;
+  public static final int PAR1 = 17;
+  public static final int CONST = 15;
+  public static final int CHAR = 13;
+  public static final int EQUALS = 27;
   public static final int ENTERO = 3;
-  public static final int MAS = 10;
+  public static final int XOR = 35;
+  public static final int DOUBLE = 11;
+  public static final int INT = 10;
+  public static final int PRINTLN = 9;
+  public static final int NOT = 36;
+  public static final int FINCADENA = 7;
+  public static final int AND = 34;
+  public static final int MAYORQUE = 32;
+  public static final int IGUAL = 26;
+  public static final int CARACTER = 5;
+  public static final int OR = 33;
+  public static final int BOOL = 14;
+  public static final int UMENOS = 21;
+  public static final int ID = 6;
+  public static final int EOF = 0;
+  public static final int DECIMAL = 4;
+  public static final int TRUE = 37;
+  public static final int error = 1;
+  public static final int CADENA = 2;
+  public static final int MODULO = 24;
+  public static final int MENOS = 20;
+  public static final int MENOR = 29;
+  public static final int MENORQUE = 30;
+  public static final int MAYOR = 31;
+  public static final int POTENCIA = 25;
+  public static final int NOTEQUALS = 28;
+  public static final int DOSP = 8;
+  public static final int STRING = 12;
+  public static final int FALSE = 38;
+  public static final int DIVISION = 23;
+  public static final int VAR = 16;
+  public static final int MULTIPLICACION = 22;
+  public static final int MAS = 19;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -43,8 +54,17 @@ public class sym {
   "ENTERO",
   "DECIMAL",
   "CARACTER",
+  "ID",
   "FINCADENA",
+  "DOSP",
   "PRINTLN",
+  "INT",
+  "DOUBLE",
+  "STRING",
+  "CHAR",
+  "BOOL",
+  "CONST",
+  "VAR",
   "PAR1",
   "PAR2",
   "MAS",
@@ -64,7 +84,9 @@ public class sym {
   "OR",
   "AND",
   "XOR",
-  "NOT"
+  "NOT",
+  "TRUE",
+  "FALSE"
   };
 }
 

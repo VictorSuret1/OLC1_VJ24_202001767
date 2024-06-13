@@ -97,11 +97,15 @@ public Object suma(Object op1, Object op2) {
                     return op1.toString() + op2.toString();
                 }
                 case tipoDato.CARACTER -> {
-                    this.tipo.setTipo(tipoDato.CARACTER);
-                    return (int) op1 + (int) ((String)op2).charAt(0); // Convertir el primer carácter de la cadena a entero (valor ASCII)
-                    
+                    if (op2.toString().length() > 1) {
+                        return new Errores("SEMANTICO", "El carácter tiene más de un símbolo", this.linea, this.col);
+                    }
+                    this.tipo.setTipo(tipoDato.ENTERO);
+                    return (int) op1 + (int) ((String) op2).charAt(0);
                 }
-                
+                case tipoDato.BOOLEANO -> {
+                    return new Errores("SEMANTICO", "Suma erronea", this.linea, this.col);
+                }
                 default -> {
                     return new Errores("SEMANTICO", "Suma erronea", this.linea, this.col);
                 }
@@ -122,8 +126,14 @@ public Object suma(Object op1, Object op2) {
                     return op1.toString() + op2.toString();
                 }
                 case tipoDato.CARACTER -> {
+                    if (op2.toString().length() > 1) {
+                        return new Errores("SEMANTICO", "El carácter tiene más de un símbolo", this.linea, this.col);
+                    }
                     this.tipo.setTipo(tipoDato.DECIMAL);
-                    return (double) op1 + (int) ((String) op2).charAt(0); // Convertir el primer carácter de la cadena a entero (valor ASCII)
+                    return (double) op1 + (int) ((String) op2).charAt(0);
+                }
+                case tipoDato.BOOLEANO -> {
+                    return new Errores("SEMANTICO", "Suma erronea", this.linea, this.col);
                 }
                 default -> {
                     return new Errores("SEMANTICO", "Suma erronea", this.linea, this.col);
@@ -131,8 +141,63 @@ public Object suma(Object op1, Object op2) {
             }
         }
         case tipoDato.CADENA -> {
-            this.tipo.setTipo(tipoDato.CADENA);
-            return op1.toString() + op2.toString();
+            switch (tipo2) {
+                case tipoDato.CADENA -> {
+                    this.tipo.setTipo(tipoDato.CADENA);
+                    return op1.toString() + op2.toString();
+                }
+                case tipoDato.BOOLEANO -> {
+                    this.tipo.setTipo(tipoDato.CADENA);
+                    return op1.toString() + op2.toString();
+                }
+                default -> {
+                    this.tipo.setTipo(tipoDato.CADENA);
+                    return op1.toString() + op2.toString();
+                }
+            }
+        }
+        case tipoDato.CARACTER -> {
+            if (op1.toString().length() > 1) {
+                return new Errores("SEMANTICO", "El carácter tiene más de un símbolo", this.linea, this.col);
+            }
+            switch (tipo2) {
+                case tipoDato.ENTERO -> {
+                    this.tipo.setTipo(tipoDato.ENTERO);
+                    return (int) ((String) op1).charAt(0) + (int) op2;
+                }
+                case tipoDato.DECIMAL -> {
+                    this.tipo.setTipo(tipoDato.DECIMAL);
+                    return (int) ((String) op1).charAt(0) + (double) op2;
+                }
+                case tipoDato.CADENA -> {
+                    this.tipo.setTipo(tipoDato.CADENA);
+                    return op1.toString() + op2.toString();
+                }
+                case tipoDato.CARACTER -> {
+                    if (op2.toString().length() > 1) {
+                        return new Errores("SEMANTICO", "El carácter tiene más de un símbolo", this.linea, this.col);
+                    }
+                    this.tipo.setTipo(tipoDato.CADENA);
+                    return op1.toString() + op2.toString();
+                }
+                case tipoDato.BOOLEANO -> {
+                    return new Errores("SEMANTICO", "Suma erronea", this.linea, this.col);
+                }
+                default -> {
+                    return new Errores("SEMANTICO", "Suma erronea", this.linea, this.col);
+                }
+            }
+        }
+        case tipoDato.BOOLEANO -> {
+            switch (tipo2) {
+                case tipoDato.CADENA -> {
+                    this.tipo.setTipo(tipoDato.CADENA);
+                    return op1.toString() + op2.toString();
+                }
+                default -> {
+                    return new Errores("SEMANTICO", "Suma erronea", this.linea, this.col);
+                }
+            }
         }
         default -> {
             return new Errores("SEMANTICO", "Suma erronea", this.linea, this.col);
@@ -157,178 +222,270 @@ public Object suma(Object op1, Object op2) {
         }
     }
     
-    public Object resta(Object op1, Object op2) {
-        var tipo1 = this.operando1.tipo.getTipo();
-        var tipo2 = this.operando2.tipo.getTipo();
+   public Object resta(Object op1, Object op2) {
+    var tipo1 = this.operando1.tipo.getTipo();
+    var tipo2 = this.operando2.tipo.getTipo();
 
-        switch (tipo1) {
-            case tipoDato.ENTERO -> {
-                switch (tipo2) {
-                    case tipoDato.ENTERO -> {
-                        this.tipo.setTipo(tipoDato.ENTERO);
-                        return (int) op1 - (int) op2;
-                    }
-                    case tipoDato.DECIMAL -> {
-                        this.tipo.setTipo(tipoDato.DECIMAL);
-                        return (int) op1 - (double) op2;
-                    }
-                    case tipoDato.CADENA -> {
-                        this.tipo.setTipo(tipoDato.CADENA);
-                        return op1.toString() + op2.toString();
-                    }
-                    default -> {
-                        return new Errores("SEMANTICO", "Resta erronea", this.linea, this.col);
-                    }
-                }
-            }
-            case tipoDato.DECIMAL -> {
-                switch (tipo2) {
-                    case tipoDato.ENTERO -> {
-                        this.tipo.setTipo(tipoDato.DECIMAL);
-                        return (double) op1 - (double) op2;
-                    }
-                    case tipoDato.DECIMAL -> {
-                        this.tipo.setTipo(tipoDato.DECIMAL);
-                        return (double) op1 - (double) op2;
-                    }
-                    case tipoDato.CADENA -> {
-                        this.tipo.setTipo(tipoDato.CADENA);
-                        return op1.toString() + op2.toString();
-                    }
-                    default -> {
-                        return new Errores("SEMANTICO", "Resta erronea", this.linea, this.col);
-                    }
-                }
-            }
-            case tipoDato.CADENA -> {
-                this.tipo.setTipo(tipoDato.CADENA);
-                return op1.toString() + op2.toString();
-            }
-            default -> {
-                return new Errores("SEMANTICO", "Suma erronea", this.linea, this.col);
-
-            }
-        }
-    }
-
-    
-    public Object multiplicacion(Object op1, Object op2){
-        var type1 = this.operando1.tipo.getTipo();
-        var type2 = this.operando2.tipo.getTipo();
-        switch (type1){
-            case tipoDato.ENTERO -> { 
-                switch (type2){
-                    case tipoDato.ENTERO -> {
-                        this.tipo.setTipo(tipoDato.ENTERO);
-                        return (int) op1 * (int) op2;
-                    }
-                    case tipoDato.DECIMAL -> {
-                        this.tipo.setTipo(tipoDato.DECIMAL);
-                        return (int) op1 * (int) op2;
-                    }
-                    case tipoDato.CARACTER -> {
-                        this.tipo.setTipo(tipoDato.CARACTER);
-                        return (int) op1 * (int) op2;
-                    }
-                    default -> {
-                        return new Errores("SEMANTICO", "LA MULTIPLICACION ES ERRONEA O ESTA MAL ESCRITA", this.linea, this.col);
-                    }
-                }
-            }
-            case tipoDato.DECIMAL -> {
-                switch (type2){
-                    case tipoDato.ENTERO -> {
-                        this.tipo.setTipo(tipoDato.DECIMAL);
-                        return (double) op1 * (int) op2; 
-                    }
-                    case tipoDato.DECIMAL -> {
-                        this.tipo.setTipo(tipoDato.DECIMAL);
-                        return (double) op1 * (double) op2;
-                    }
-                    case tipoDato.CARACTER -> {
-                        this.tipo.setTipo(tipoDato.CARACTER);
-                        return (double) op1 * (int) op2;
-                    }
-                    default -> {
-                        return new Errores("SEMANTICO", "LA MULTIPLICACION ES ERRONEA O ESTA MAL ESCRITA", this.linea, this.col);
-                    }
-                }
-            }
-            default -> {
-                return new Errores("SEMANTICO", "LA SUMA ES ERRONEA O ESTA MAL ESCRITA", this.linea, this.col);
-            }
-        }
-    }
-
-    
-public Object division(Object op1, Object op2){
-    var type1 = this.operando1.tipo.getTipo();
-    var type2 = this.operando2.tipo.getTipo();
-    switch (type1){
+    switch (tipo1) {
         case tipoDato.ENTERO -> {
-            switch (type2){
+            switch (tipo2) {
+                case tipoDato.ENTERO -> {
+                    this.tipo.setTipo(tipoDato.ENTERO);
+                    return (int) op1 - (int) op2;
+                }
+                case tipoDato.DECIMAL -> {
+                    this.tipo.setTipo(tipoDato.DECIMAL);
+                    return (int) op1 - (double) op2;
+                }
+                case tipoDato.CADENA -> {
+                    return new Errores("SEMANTICO", "Resta erronea: No se puede restar una cadena de un entero", this.linea, this.col);
+                }
+                case tipoDato.CARACTER -> {
+                    if (op2.toString().length() > 1) {
+                        return new Errores("SEMANTICO", "El carácter tiene más de un símbolo", this.linea, this.col);
+                    }
+                    this.tipo.setTipo(tipoDato.ENTERO);
+                    return (int) op1 - (int) ((String) op2).charAt(0);
+                }
+                default -> {
+                    return new Errores("SEMANTICO", "Resta erronea", this.linea, this.col);
+                }
+            }
+        }
+        case tipoDato.DECIMAL -> {
+            switch (tipo2) {
+                case tipoDato.ENTERO -> {
+                    this.tipo.setTipo(tipoDato.DECIMAL);
+                    return (double) op1 - (int) op2;
+                }
+                case tipoDato.DECIMAL -> {
+                    this.tipo.setTipo(tipoDato.DECIMAL);
+                    return (double) op1 - (double) op2;
+                }
+                case tipoDato.CADENA -> {
+                    return new Errores("SEMANTICO", "Resta erronea: No se puede restar una cadena de un decimal", this.linea, this.col);
+                }
+                case tipoDato.CARACTER -> {
+                    if (op2.toString().length() > 1) {
+                        return new Errores("SEMANTICO", "El carácter tiene más de un símbolo", this.linea, this.col);
+                    }
+                    this.tipo.setTipo(tipoDato.DECIMAL);
+                    return (double) op1 - (int) ((String) op2).charAt(0);
+                }
+                default -> {
+                    return new Errores("SEMANTICO", "Resta erronea", this.linea, this.col);
+                }
+            }
+        }
+        case tipoDato.CADENA -> {
+            return new Errores("SEMANTICO", "Resta erronea: No se puede restar de una cadena", this.linea, this.col);
+        }
+        case tipoDato.CARACTER -> {
+            if (op1.toString().length() > 1) {
+                return new Errores("SEMANTICO", "El carácter tiene más de un símbolo", this.linea, this.col);
+            }
+            switch (tipo2) {
+                case tipoDato.ENTERO -> {
+                    this.tipo.setTipo(tipoDato.ENTERO);
+                    return (int) ((String) op1).charAt(0) - (int) op2;
+                }
+                case tipoDato.DECIMAL -> {
+                    this.tipo.setTipo(tipoDato.DECIMAL);
+                    return (int) ((String) op1).charAt(0) - (double) op2;
+                }
+                case tipoDato.CADENA -> {
+                    return new Errores("SEMANTICO", "Resta erronea: No se puede restar una cadena de un caracter", this.linea, this.col);
+                }
+                case tipoDato.CARACTER -> {
+                    return new Errores("SEMANTICO", "Resta erronea: No se puede restar un caracter con un caracter", this.linea, this.col);
+                }
+                default -> {
+                    return new Errores("SEMANTICO", "Resta erronea", this.linea, this.col);
+                }
+            }
+        }
+        default -> {
+            return new Errores("SEMANTICO", "Resta erronea", this.linea, this.col);
+        }
+    }
+}
+
+    
+ public Object multiplicacion(Object op1, Object op2) {
+    var tipo1 = this.operando1.tipo.getTipo();
+    var tipo2 = this.operando2.tipo.getTipo();
+
+    switch (tipo1) {
+        case tipoDato.ENTERO -> {
+            switch (tipo2) {
+                case tipoDato.ENTERO -> {
+                    this.tipo.setTipo(tipoDato.ENTERO);
+                    return (int) op1 * (int) op2;
+                }
+                case tipoDato.DECIMAL -> {
+                    this.tipo.setTipo(tipoDato.DECIMAL);
+                    return (int) op1 * (double) op2;
+                }
+                case tipoDato.CARACTER -> {
+                    if (op2.toString().length() > 1) {
+                        return new Errores("SEMANTICO", "El carácter tiene más de un símbolo", this.linea, this.col);
+                    }
+                    this.tipo.setTipo(tipoDato.ENTERO);
+                    return (int) op1 * (int) ((String) op2).charAt(0);
+                }
+                default -> {
+                    return new Errores("SEMANTICO", "La multiplicación es errónea o está mal escrita", this.linea, this.col);
+                }
+            }
+        }
+        case tipoDato.DECIMAL -> {
+            switch (tipo2) {
+                case tipoDato.ENTERO -> {
+                    this.tipo.setTipo(tipoDato.DECIMAL);
+                    return (double) op1 * (int) op2;
+                }
+                case tipoDato.DECIMAL -> {
+                    this.tipo.setTipo(tipoDato.DECIMAL);
+                    return (double) op1 * (double) op2;
+                }
+                case tipoDato.CARACTER -> {
+                    if (op2.toString().length() > 1) {
+                        return new Errores("SEMANTICO", "El carácter tiene más de un símbolo", this.linea, this.col);
+                    }
+                    this.tipo.setTipo(tipoDato.DECIMAL);
+                    return (double) op1 * (int) ((String) op2).charAt(0);
+                }
+                default -> {
+                    return new Errores("SEMANTICO", "La multiplicación es errónea o está mal escrita", this.linea, this.col);
+                }
+            }
+        }
+        case tipoDato.CARACTER -> {
+            if (op1.toString().length() > 1) {
+                return new Errores("SEMANTICO", "El carácter tiene más de un símbolo", this.linea, this.col);
+            }
+            switch (tipo2) {
+                case tipoDato.ENTERO -> {
+                    this.tipo.setTipo(tipoDato.ENTERO);
+                    return (int) ((String) op1).charAt(0) * (int) op2;
+                }
+                case tipoDato.DECIMAL -> {
+                    this.tipo.setTipo(tipoDato.DECIMAL);
+                    return (int) ((String) op1).charAt(0) * (double) op2;
+                }
+                case tipoDato.CARACTER -> {
+                    return new Errores("SEMANTICO", "Multiplicación errónea: No se puede multiplicar dos caracteres", this.linea, this.col);
+                }
+                default -> {
+                    return new Errores("SEMANTICO", "La multiplicación es errónea o está mal escrita", this.linea, this.col);
+                }
+            }
+        }
+        default -> {
+            return new Errores("SEMANTICO", "La multiplicación es errónea o está mal escrita", this.linea, this.col);
+        }
+    }
+}
+
+    
+public Object division(Object op1, Object op2) {
+    var tipo1 = this.operando1.tipo.getTipo();
+    var tipo2 = this.operando2.tipo.getTipo();
+
+    switch (tipo1) {
+        case tipoDato.ENTERO -> {
+            switch (tipo2) {
                 case tipoDato.ENTERO -> {
                     if ((int) op2 == 0) {
-                        System.out.println("error division 0");
-                        return new Errores("SEMANTICO", "DIVISION POR CERO", this.linea, this.col);
+                        System.out.println("Error: División por cero");
+                        return new Errores("SEMANTICO", "División por cero", this.linea, this.col);
                     }
                     this.tipo.setTipo(tipoDato.DECIMAL);
                     return (double) ((int) op1) / (int) op2;
                 }
                 case tipoDato.DECIMAL -> {
                     if ((double) op2 == 0.0) {
-                        System.out.println("error division 0");
-                        return new Errores("SEMANTICO", "DIVISION POR CERO", this.linea, this.col);
+                        System.out.println("Error: División por cero");
+                        return new Errores("SEMANTICO", "División por cero", this.linea, this.col);
                     }
                     this.tipo.setTipo(tipoDato.DECIMAL);
                     return (double) ((int) op1) / (double) op2;
                 }
                 case tipoDato.CARACTER -> {
-                    if ((int) op2 == 0) {
-                        System.out.println("error division 0");
-                        return new Errores("SEMANTICO", "DIVISION POR CERO", this.linea, this.col);
+                    if (op2.toString().length() > 1 || (int) ((String) op2).charAt(0) == 0) {
+                        System.out.println("Error: División por cero");
+                        return new Errores("SEMANTICO", "División por cero", this.linea, this.col);
                     }
                     this.tipo.setTipo(tipoDato.DECIMAL);
-                    return (double) ((int) op1) / (int) op2;
+                    return (double) ((int) op1) / (int) ((String) op2).charAt(0);
                 }
                 default -> {
-                    return new Errores("SEMANTICO", "LA DIVISION ES ERRONEA O ESTA MAL ESCRITA", this.linea, this.col);
+                    return new Errores("SEMANTICO", "La división es errónea o está mal escrita", this.linea, this.col);
                 }
             }
         }
         case tipoDato.DECIMAL -> {
-            switch (type2){
+            switch (tipo2) {
                 case tipoDato.ENTERO -> {
                     if ((int) op2 == 0) {
-                        System.out.println("error division 0");
-                        return new Errores("SEMANTICO", "DIVISION POR CERO", this.linea, this.col);
+                        System.out.println("Error: División por cero");
+                        return new Errores("SEMANTICO", "División por cero", this.linea, this.col);
                     }
                     this.tipo.setTipo(tipoDato.DECIMAL);
-                    return (double) op1 / (int) op2; 
+                    return (double) op1 / (int) op2;
                 }
                 case tipoDato.DECIMAL -> {
                     if ((double) op2 == 0.0) {
-                        System.out.println("error division 0");
-                        return new Errores("SEMANTICO", "DIVISION POR CERO", this.linea, this.col);
+                        System.out.println("Error: División por cero");
+                        return new Errores("SEMANTICO", "División por cero", this.linea, this.col);
                     }
                     this.tipo.setTipo(tipoDato.DECIMAL);
                     return (double) op1 / (double) op2;
                 }
                 case tipoDato.CARACTER -> {
-                    if ((int) op2 == 0) {
-                        System.out.println("error division 0");
-                        return new Errores("SEMANTICO", "DIVISION POR CERO", this.linea, this.col);
+                    if (op2.toString().length() > 1 || (int) ((String) op2).charAt(0) == 0) {
+                        System.out.println("Error: División por cero");
+                        return new Errores("SEMANTICO", "División por cero", this.linea, this.col);
                     }
                     this.tipo.setTipo(tipoDato.DECIMAL);
-                    return (double) op1 / (int) op2;
+                    return (double) op1 / (int) ((String) op2).charAt(0);
                 }
                 default -> {
-                    return new Errores("SEMANTICO", "LA DIVISION ES ERRONEA O ESTA MAL ESCRITA", this.linea, this.col);
+                    return new Errores("SEMANTICO", "La división es errónea o está mal escrita", this.linea, this.col);
+                }
+            }
+        }
+        case tipoDato.CARACTER -> {
+            if (op1.toString().length() > 1) {
+                return new Errores("SEMANTICO", "El carácter tiene más de un símbolo", this.linea, this.col);
+            }
+            switch (tipo2) {
+                case tipoDato.ENTERO -> {
+                    if ((int) op2 == 0) {
+                        System.out.println("Error: División por cero");
+                        return new Errores("SEMANTICO", "División por cero", this.linea, this.col);
+                    }
+                    this.tipo.setTipo(tipoDato.DECIMAL);
+                    return (double) ((String) op1).charAt(0) / (int) op2;
+                }
+                case tipoDato.DECIMAL -> {
+                    if ((double) op2 == 0.0) {
+                        System.out.println("Error: División por cero");
+                        return new Errores("SEMANTICO", "División por cero", this.linea, this.col);
+                    }
+                    this.tipo.setTipo(tipoDato.DECIMAL);
+                    return (double) ((String) op1).charAt(0) / (double) op2;
+                }
+                case tipoDato.CARACTER -> {
+                    return new Errores("SEMANTICO", "División errónea: No se puede dividir dos caracteres", this.linea, this.col);
+                }
+                default -> {
+                    return new Errores("SEMANTICO", "La división es errónea o está mal escrita", this.linea, this.col);
                 }
             }
         }
         default -> {
-            return new Errores("SEMANTICO", "LA DIVISION ES ERRONEA O ESTA MAL ESCRITA", this.linea, this.col);
+            return new Errores("SEMANTICO", "La división es errónea o está mal escrita", this.linea, this.col);
         }
     }
 }
@@ -391,42 +548,57 @@ public Object modulo(Object op1, Object op2) {
 }
 
 
- public Object potencia(Object op1, Object op2){
-    var type1 = this.operando1.tipo.getTipo();
-    var type2 = this.operando2.tipo.getTipo();
-    switch (type1){
+public Object potencia(Object op1, Object op2) {
+    var tipo1 = this.operando1.tipo.getTipo();
+    var tipo2 = this.operando2.tipo.getTipo();
+
+    switch (tipo1) {
         case tipoDato.ENTERO -> {
-            switch (type2){
+            switch (tipo2) {
                 case tipoDato.ENTERO -> {
                     this.tipo.setTipo(tipoDato.ENTERO);
-                    return Math.pow((int) op1, (int) op2);
+                    return (int) Math.pow((int) op1, (int) op2);
                 }
                 case tipoDato.DECIMAL -> {
                     this.tipo.setTipo(tipoDato.DECIMAL);
                     return Math.pow((int) op1, (double) op2);
                 }
+                case tipoDato.CARACTER -> {
+                    if (op2.toString().length() > 1) {
+                        return new Errores("SEMANTICO", "El carácter tiene más de un símbolo", this.linea, this.col);
+                    }
+                    this.tipo.setTipo(tipoDato.ENTERO);
+                    return (int) Math.pow((int) op1, (int) ((String) op2).charAt(0));
+                }
                 default -> {
-                    return new Errores("SEMANTICO", "LA POTENCIA ES ERRONEA O ESTA MAL ESCRITA", this.linea, this.col);
+                    return new Errores("SEMANTICO", "La potencia es errónea o está mal escrita", this.linea, this.col);
                 }
             }
         }
         case tipoDato.DECIMAL -> {
-            switch (type2){
+            switch (tipo2) {
                 case tipoDato.ENTERO -> {
                     this.tipo.setTipo(tipoDato.DECIMAL);
-                    return Math.pow((double) op1, (int) op2); 
+                    return Math.pow((double) op1, (int) op2);
                 }
                 case tipoDato.DECIMAL -> {
                     this.tipo.setTipo(tipoDato.DECIMAL);
                     return Math.pow((double) op1, (double) op2);
                 }
+                case tipoDato.CARACTER -> {
+                    if (op2.toString().length() > 1) {
+                        return new Errores("SEMANTICO", "El carácter tiene más de un símbolo", this.linea, this.col);
+                    }
+                    this.tipo.setTipo(tipoDato.DECIMAL);
+                    return Math.pow((double) op1, (int) ((String) op2).charAt(0));
+                }
                 default -> {
-                    return new Errores("SEMANTICO", "LA POTENCIA ES ERRONEA O ESTA MAL ESCRITA", this.linea, this.col);
+                    return new Errores("SEMANTICO", "La potencia es errónea o está mal escrita", this.linea, this.col);
                 }
             }
         }
         default -> {
-            return new Errores("SEMANTICO", "LA POTENCIA ES ERRONEA O ESTA MAL ESCRITA", this.linea, this.col);
+            return new Errores("SEMANTICO", "La potencia es errónea o está mal escrita", this.linea, this.col);
         }
     }
 }

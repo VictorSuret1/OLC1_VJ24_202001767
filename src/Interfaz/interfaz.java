@@ -281,8 +281,8 @@ try {
                     lista.add((Errores) res);
                 }
             }
-            System.out.println(ast.getConsola());
-
+             
+            jTextArea2.setText(ast.getConsola());
             for (var i : lista) {
                 System.out.println(i);
             }

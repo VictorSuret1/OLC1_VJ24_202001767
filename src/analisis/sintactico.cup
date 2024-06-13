@@ -10,6 +10,8 @@ import simbolo.tipoDato;
 
 //instrucciones
 import instrucciones.Print;
+import instrucciones.Declaracion;
+import instrucciones.AsignacionVar;
 
 //expresiones
 import expresiones.Nativo;
@@ -18,6 +20,12 @@ import expresiones.OperadoresAritmeticos;
 import expresiones.Relacionales;
 import expresiones.OperadoresRelacionales;
 import excepciones.Errores;
+import expresiones.OperadoresLogicos;
+import expresiones.Logicos;
+import expresiones.AccesoVar;
+
+
+
 // parser
 parser code
 {:
@@ -47,8 +55,8 @@ action code
 :}
 
 //terminales
-terminal String CADENA, ENTERO, DECIMAL,CARACTER;
-terminal FINCADENA, PRINTLN;
+terminal String CADENA, ENTERO, DECIMAL,CARACTER, ID;
+terminal FINCADENA, DOSP,PRINTLN, INT, DOUBLE, STRING,CHAR, BOOL,CONST,VAR;
 terminal PAR1, PAR2, MAS, MENOS, UMENOS, MULTIPLICACION, DIVISION,MODULO,POTENCIA;
 terminal IGUAL,EQUALS;
 terminal NOTEQUALS;
@@ -56,12 +64,17 @@ terminal MENOR, MENORQUE;
 terminal MAYOR, MAYORQUE;
 terminal OR,AND,XOR,NOT;
 
+terminal TRUE, FALSE;
 
 
 //no terminales
 nonterminal LinkedList<Instruccion> INICIO, INSTRUCCIONES;
 nonterminal Instruccion INSTRUCCION;
 nonterminal Instruccion EXPRESION;
+nonterminal Instruccion IMPRESION, DECLARACION, ASIGNACION;
+nonterminal Tipo TIPOS;
+
+nonterminal String MUTABILIDAD;
 
 precedence left OR;
 precedence left AND;
@@ -75,35 +88,66 @@ precedence left MULTIPLICACION, DIVISION, MODULO;
 precedence left POTENCIA;
 precedence left UMENOS;
 
+
 start with INICIO;
 
-INICIO ::= INSTRUCCIONES:a      {:   RESULT = a;   :}
+INICIO ::= INSTRUCCIONES:a      {: RESULT = a; :}
 ;
 
 INSTRUCCIONES ::= INSTRUCCIONES:a INSTRUCCION:b     {: RESULT = a; RESULT.add(b); :}
                 | INSTRUCCION:a                   {: RESULT = new LinkedList<>(); RESULT.add(a); :}
 ;
 
-INSTRUCCION ::= PRINTLN PAR1 EXPRESION:a PAR2 FINCADENA      {:   RESULT = new Print(a, aleft, aright);   :}
+INSTRUCCION ::= IMPRESION:a                 {: RESULT = a; :}
+                | DECLARACION:a              {: RESULT = a; :}
+                | ASIGNACION:a               {: RESULT = a; :}
                 | error FINCADENA
-                | error 
 ;
 
-EXPRESION ::= MENOS EXPRESION:a             {:   RESULT = new Aritmeticas(a, OperadoresAritmeticos.NEGACION, aleft, aright);   :} %prec UMENOS
-            | EXPRESION:a MAS EXPRESION:b   {:   RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.SUMA, aleft, aright);   :}
-            | EXPRESION:a MENOS EXPRESION:b   {:   RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.RESTA, aleft, aright);   :}
-            | EXPRESION:a MULTIPLICACION EXPRESION:b   {:   RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.MULTIPLICACION, aleft, aright);   :}
-            | EXPRESION:a DIVISION EXPRESION:b   {:   RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.DIVISION, aleft, aright);   :}
-            | EXPRESION:a MODULO EXPRESION:b   {:   RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.MODULO, aleft, aright);   :}
-            | EXPRESION:a POTENCIA EXPRESION:b   {:   RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.POTENCIA, aleft, aright);   :}
-            | EXPRESION:a IGUAL IGUAL EXPRESION:b {:    RESULT = new Relacionales(a, b, OperadoresRelacionales.EQUALS, aleft, aright);    :}%prec EQUALS
-            | EXPRESION:a NOTEQUALS EXPRESION:b {:    RESULT = new Relacionales(a, b, OperadoresRelacionales.NOTEQUALS, aleft, aright);    :}
-            | EXPRESION:a MAYOR EXPRESION:b {:    RESULT = new Relacionales(a, b, OperadoresRelacionales.MAYOR, aleft, aright);    :}
-            | EXPRESION:a MAYORQUE EXPRESION:b {:    RESULT = new Relacionales(a, b, OperadoresRelacionales.MAYORQUE, aleft, aright);    :}
-            | EXPRESION:a MENOR EXPRESION:b {:    RESULT = new Relacionales(a, b, OperadoresRelacionales.MENOR, aleft, aright);    :}
-            | EXPRESION:a MENORQUE EXPRESION:b {:    RESULT = new Relacionales(a, b, OperadoresRelacionales.MENORQUE, aleft, aright);    :}
-            | ENTERO:a      {:   RESULT = new Nativo(Integer.parseInt(a), new Tipo(tipoDato.ENTERO), aleft, aright );   :}
-            | DECIMAL:a     {:   RESULT = new Nativo(new Double(a), new Tipo(tipoDato.DECIMAL), aleft, aright );   :}
-            | CADENA:a      {:   RESULT = new Nativo(a, new Tipo(tipoDato.CADENA), aleft, aright );   :}
-            | CARACTER:a      {:   RESULT = new Nativo(a, new Tipo(tipoDato.CARACTER), aleft, aright );   :}
+IMPRESION ::= PRINTLN PAR1 EXPRESION:a PAR2 FINCADENA      {: RESULT = new Print(a, aleft, aright); :}
+;
+
+DECLARACION ::= MUTABILIDAD:m ID:b DOSP TIPOS:a FINCADENA                   {: RESULT = new Declaracion(m, b, null, a, aleft, aright); :}
+                | MUTABILIDAD:m ID:b DOSP TIPOS:a IGUAL EXPRESION:c FINCADENA {: RESULT = new Declaracion(m, b, c, a, aleft, aright); :}
+;
+
+ASIGNACION ::= ID:a IGUAL EXPRESION:b FINCADENA  {: RESULT = new AsignacionVar(a, b, aleft, aright); :}
+;
+
+TIPOS ::= INT              {: RESULT = new Tipo(tipoDato.ENTERO); :}
+           | DOUBLE          {: RESULT = new Tipo(tipoDato.DECIMAL); :}
+           | STRING          {: RESULT = new Tipo(tipoDato.CADENA); :}
+           | CHAR            {: RESULT = new Tipo(tipoDato.CARACTER); :}
+           | BOOL            {: RESULT = new Tipo(tipoDato.BOOLEANO); :}
+;
+
+MUTABILIDAD ::= CONST {: RESULT = "CONST"; :}
+              | VAR   {: RESULT = "VAR"; :}
+;
+
+EXPRESION ::= MENOS EXPRESION:a               {: RESULT = new Aritmeticas(a, OperadoresAritmeticos.NEGACION, aleft, aright); :} %prec UMENOS
+            | EXPRESION:a MAS EXPRESION:b     {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.SUMA, aleft, aright); :}
+            | EXPRESION:a MENOS EXPRESION:b   {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.RESTA, aleft, aright); :}
+            | EXPRESION:a MULTIPLICACION EXPRESION:b   {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.MULTIPLICACION, aleft, aright); :}
+            | EXPRESION:a DIVISION EXPRESION:b   {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.DIVISION, aleft, aright); :}
+            | EXPRESION:a MODULO EXPRESION:b   {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.MODULO, aleft, aright); :}
+            | EXPRESION:a POTENCIA EXPRESION:b   {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.POTENCIA, aleft, aright); :}
+            | EXPRESION:a IGUAL IGUAL EXPRESION:b {: RESULT = new Relacionales(a, b, OperadoresRelacionales.EQUALS, aleft, aright); :} %prec EQUALS
+            | EXPRESION:a NOTEQUALS EXPRESION:b {: RESULT = new Relacionales(a, b, OperadoresRelacionales.NOTEQUALS, aleft, aright); :}
+            | EXPRESION:a MAYOR EXPRESION:b {: RESULT = new Relacionales(a, b, OperadoresRelacionales.MAYOR, aleft, aright); :}
+            | EXPRESION:a MAYORQUE EXPRESION:b {: RESULT = new Relacionales(a, b, OperadoresRelacionales.MAYORQUE, aleft, aright); :}
+            | EXPRESION:a MENOR EXPRESION:b {: RESULT = new Relacionales(a, b, OperadoresRelacionales.MENOR, aleft, aright); :}
+            | EXPRESION:a MENORQUE EXPRESION:b {: RESULT = new Relacionales(a, b, OperadoresRelacionales.MENORQUE, aleft, aright); :}
+            | EXPRESION:a OR EXPRESION:b {: RESULT = new Logicos(a, b, OperadoresLogicos.OR, aleft, aright); :}
+            | EXPRESION:a AND EXPRESION:b {: RESULT = new Logicos(a, b, OperadoresLogicos.AND, aleft, aright); :}
+            | EXPRESION:a XOR EXPRESION:b {: RESULT = new Logicos(a, b, OperadoresLogicos.XOR, aleft, aright); :}
+            | NOT EXPRESION:a {: RESULT = new Logicos(a, null, OperadoresLogicos.NOT, aleft, aright); :}
+            | PAR1 EXPRESION:a PAR2 {: RESULT = a; :}
+            | ENTERO:a      {: RESULT = new Nativo(Integer.parseInt(a), new Tipo(tipoDato.ENTERO), aleft, aright); :}
+            | DECIMAL:a     {: RESULT = new Nativo(Double.parseDouble(a), new Tipo(tipoDato.DECIMAL), aleft, aright); :}
+            | CADENA:a      {: RESULT = new Nativo(a, new Tipo(tipoDato.CADENA), aleft, aright); :}
+            | CARACTER:a    {: RESULT = new Nativo(a.charAt(0), new Tipo(tipoDato.CARACTER), aleft, aright); :}
+            | TRUE:a        {: RESULT = new Nativo(true, new Tipo(tipoDato.BOOLEANO), aleft, aright); :}
+            | FALSE:a       {: RESULT = new Nativo(false, new Tipo(tipoDato.BOOLEANO), aleft, aright); :}
+            | ID:a          {: RESULT = new AccesoVar(a, aleft, aright); :}
 ;
