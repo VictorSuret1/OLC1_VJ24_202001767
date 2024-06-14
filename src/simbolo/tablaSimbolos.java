@@ -11,8 +11,9 @@ import java.util.HashMap;
  * @author VictorS
  */
 public class tablaSimbolos {
+
     private tablaSimbolos tablaAnterior;
-    private HashMap<String, Object> tablaActual;
+    private HashMap<String, Simbolo> tablaActual;
     private String nombre;
 
     public tablaSimbolos() {
@@ -27,18 +28,18 @@ public class tablaSimbolos {
     }
 
     public tablaSimbolos getTablaAnterior() {
-        return tablaAnterior;
+        return this.tablaAnterior;
     }
 
     public void setTablaAnterior(tablaSimbolos tablaAnterior) {
         this.tablaAnterior = tablaAnterior;
     }
 
-    public HashMap<String, Object> getTablaActual() {
+    public HashMap<String, Simbolo> getTablaActual() {
         return tablaActual;
     }
 
-    public void setTablaActual(HashMap<String, Object> tablaActual) {
+    public void setTablaActual(HashMap<String, Simbolo> tablaActual) {
         this.tablaActual = tablaActual;
     }
 
@@ -49,27 +50,22 @@ public class tablaSimbolos {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-    
-    
-    
+
     public boolean setVariable(Simbolo simbolo) {
-        Simbolo busqueda
-                = (Simbolo) this.tablaActual.get(
-                        simbolo.getId().
-                                toLowerCase());
+        Simbolo busqueda = this.tablaActual.get(simbolo.getId().toLowerCase());
         if (busqueda == null) {
-            this.tablaActual.put(simbolo.getId().toLowerCase(),
-                    simbolo);
+            this.tablaActual.put(simbolo.getId().toLowerCase(), simbolo);
             return true;
         }
         return false;
     }
 
     public Simbolo getVariable(String id) {
-        Simbolo busqueda = (Simbolo) this.tablaActual.
-                get(id.toLowerCase());
-        if (busqueda != null) {
-            return busqueda;
+        for (tablaSimbolos i = this; i != null; i = i.getTablaAnterior()) {
+            Simbolo busqueda = i.tablaActual.get(id.toLowerCase());
+            if (busqueda != null) {
+                return busqueda;
+            }
         }
         return null;
     }

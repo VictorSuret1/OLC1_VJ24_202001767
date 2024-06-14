@@ -68,7 +68,6 @@ public class interfaz extends javax.swing.JFrame {
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem8 = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
@@ -129,9 +128,6 @@ public class interfaz extends javax.swing.JFrame {
         jMenu1.add(jMenuItem4);
 
         jMenuBar1.add(jMenu1);
-
-        jMenu2.setText("PESTA;AS");
-        jMenuBar1.add(jMenu2);
 
         jMenu3.setText("EJECUTAR");
 
@@ -344,7 +340,6 @@ try {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JTabbedPane PEST;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;

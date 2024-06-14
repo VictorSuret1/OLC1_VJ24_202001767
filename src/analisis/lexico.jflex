@@ -32,6 +32,8 @@ listaErrores = new LinkedList<>();
 //simbolos del sistema
 PAR1="("
 PAR2=")"
+LLAVE1 = "{"
+LLAVE2 ="}"
 MAS="+"
 MENOS="-"
 MULTIPLICACION = "*"
@@ -47,11 +49,18 @@ AND = "&&"
 XOR = "^"
 NOT = "!"
 
+EQUALS = "=="
 NOTEQUALS = "!="
 MENOR="<"
 MAYOR=">"
 MAYORQUE=">="
 MENORQUE = "<="
+
+INCREMENTO = "++"
+DECREMENTO = "--"
+
+FLECHA = "=>"
+
 
 
 
@@ -73,6 +82,11 @@ CHAR = "char"
 BOOL = "bool"
 CONST = "const"
 VAR = "var"
+IF = "IF"
+ELSE = "ELSE"
+ELSEIF = "ELSE IF"
+MATCH = "MATCH"
+DEFAULT = "_"
 
 %%
 <YYINITIAL> {PRINTLN} {return new Symbol(sym.PRINTLN, yyline, yycolumn,yytext());}
@@ -85,6 +99,10 @@ VAR = "var"
 <YYINITIAL> {BOOL} {return new Symbol(sym.BOOL, yyline, yycolumn,yytext());}
 <YYINITIAL> {CONST} {return new Symbol(sym.CONST, yyline, yycolumn,yytext());}
 <YYINITIAL> {VAR} {return new Symbol(sym.VAR, yyline, yycolumn,yytext());}
+<YYINITIAL> {IF} {return new Symbol(sym.IF, yyline, yycolumn,yytext());}
+<YYINITIAL> {ELSE} {return new Symbol(sym.ELSE, yyline, yycolumn,yytext());}
+<YYINITIAL> {ELSEIF} {return new Symbol(sym.ELSEIF, yyline, yycolumn,yytext());}
+<YYINITIAL> {MATCH} {return new Symbol(sym.MATCH, yyline, yycolumn,yytext());}
 
 
 <YYINITIAL> {ID} {return new Symbol(sym.ID, yyline, yycolumn,yytext());}
@@ -108,6 +126,8 @@ VAR = "var"
 <YYINITIAL> {DOSP} {return new Symbol(sym.DOSP, yyline, yycolumn,yytext());}
 <YYINITIAL> {PAR1} {return new Symbol(sym.PAR1, yyline, yycolumn,yytext());}
 <YYINITIAL> {PAR2} {return new Symbol(sym.PAR2, yyline, yycolumn,yytext());}
+<YYINITIAL> {LLAVE1} {return new Symbol(sym.LLAVE1, yyline, yycolumn,yytext());}
+<YYINITIAL> {LLAVE2} {return new Symbol(sym.LLAVE2, yyline, yycolumn,yytext());}
 
 <YYINITIAL> {MAS} {return new Symbol(sym.MAS, yyline, yycolumn,yytext());}
 <YYINITIAL> {MENOS} {return new Symbol(sym.MENOS, yyline, yycolumn,yytext());}
@@ -117,6 +137,7 @@ VAR = "var"
 <YYINITIAL> {POTENCIA} {return new Symbol(sym.POTENCIA, yyline, yycolumn,yytext());}
 
 <YYINITIAL> {IGUAL} {return new Symbol(sym.IGUAL, yyline, yycolumn,yytext());}
+<YYINITIAL> {EQUALS} {return new Symbol(sym.EQUALS, yyline, yycolumn,yytext());}
 <YYINITIAL> {NOTEQUALS} {return new Symbol(sym.NOTEQUALS, yyline, yycolumn,yytext());}
 
 <YYINITIAL> {OR} {return new Symbol(sym.OR, yyline, yycolumn,yytext());}
@@ -125,14 +146,17 @@ VAR = "var"
 <YYINITIAL> {NOT} {return new Symbol(sym.NOT, yyline, yycolumn,yytext());}
 
 
-<YYINITIAL> {MENOR} {return new Symbol(sym.MENOR, yyline, yycolumn,yytext());}
 <YYINITIAL> {MAYOR} {return new Symbol(sym.MAYOR, yyline, yycolumn,yytext());}
 <YYINITIAL> {MENOR} {return new Symbol(sym.MENOR, yyline, yycolumn,yytext());}
 <YYINITIAL> {MAYORQUE} {return new Symbol(sym.MAYORQUE, yyline, yycolumn,yytext());}
 <YYINITIAL> {MENORQUE} {return new Symbol(sym.MENORQUE, yyline, yycolumn,yytext());}
 
+<YYINITIAL> {FLECHA} {return new Symbol(sym.FLECHA, yyline, yycolumn,yytext());}
+<YYINITIAL> {DEFAULT} {return new Symbol(sym.DEFAULT, yyline, yycolumn,yytext());}
 
 
+<YYINITIAL> {INCREMENTO} {return new Symbol(sym.INCREMENTO, yyline, yycolumn, yytext());}
+<YYINITIAL> {DECREMENTO} {return new Symbol(sym.DECREMENTO, yyline, yycolumn, yytext());}
 
 <YYINITIAL> {BLANCOS} {}
 

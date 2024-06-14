@@ -24,27 +24,33 @@ public class AsignacionVar extends Instruccion {
 
     @Override
     public Object interpretar(Arbol arbol, tablaSimbolos tabla) {
-        //variable exista
-        var variable = tabla.getVariable(id);
+        // Verificar si la variable existe en la tabla de símbolos
+        Simbolo variable = tabla.getVariable(id);
         if (variable == null) {
-            return new Errores("SEMANTICO", "Variable no exitente",
+            return new Errores("SEMANTICO", "Variable no existente",
                     this.linea, this.col);
         }
 
-        // interpretar el nuevo valor a asignar
-        var newValor = this.exp.interpretar(arbol, tabla);
+        // Verificar si se intenta modificar una constante
+        if (variable.getMutabilidad().equals("CONST")) {
+            return new Errores("SEMANTICO", "No se puede modificar una variable constante",
+                    this.linea, this.col);
+        }
+
+        // Interpretar el nuevo valor a asignar
+        Object newValor = this.exp.interpretar(arbol, tabla);
         if (newValor instanceof Errores) {
             return newValor;
         }
 
-        //validar tipos
+        // Validar tipos
         if (variable.getTipo().getTipo() != this.exp.tipo.getTipo()) {
-            return new Errores("SEMANTICO", "Tipos erroneos en asignacion",
+            return new Errores("SEMANTICO", "Tipos incorrectos en asignación",
                     this.linea, this.col);
         }
-        //this.tipo.setTipo(variable.getTipo().getTipo());
+
+        // Asignar el nuevo valor a la variable
         variable.setValor(newValor);
         return null;
     }
-
 }
