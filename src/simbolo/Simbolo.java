@@ -13,7 +13,11 @@ public class Simbolo {
     private String id;
     private Object valor;
     private String mutabilidad;
-
+    private String entorno;
+    private int linea;
+    private int columna;
+    
+    
     public Simbolo(Tipo tipo, String id) {
         this.tipo = tipo;
         this.id = id;
@@ -24,6 +28,7 @@ public class Simbolo {
         this.id = id;
         this.valor = valor;
     }
+    
 
     public void setTipo(Tipo tipo) {
         this.tipo = tipo;
@@ -56,4 +61,6 @@ public class Simbolo {
     public String getMutabilidad() {
         return mutabilidad;
     }
+
+    
 }

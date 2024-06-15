@@ -27,8 +27,9 @@ public class Patroninterprete {
             String texto = ""
                     + " const nota2 : double = 20.6;"
                     + "println(nota2);"
-                    + "a : STRING;"
-                    + "";
+                    + "orubt"
+                    + ""
+                    + "println(nota2);";
             scanner s = new scanner(new BufferedReader(new StringReader(texto)));
             parser p = new parser(s);
             var resultado = p.parse();

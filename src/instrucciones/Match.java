@@ -5,6 +5,7 @@
 package instrucciones;
 
 import abstracto.*;
+import static analisis.scanner.listaErrores;
 import excepciones.*;
 import java.util.LinkedList;
 import simbolo.*;
@@ -15,53 +16,49 @@ import simbolo.*;
  */
 public class Match extends Instruccion {
     private Instruccion expresion;
-    private LinkedList<Case> cases;
-    private DefaultCase defaultCase;
+    private LinkedList<Case> casos;
+    private LinkedList<Instruccion> defaultInstrucciones;
 
-    public Match(Instruccion expresion, LinkedList<Case> cases, DefaultCase defaultCase, int linea, int col) {
+    public Match(Instruccion expresion, LinkedList<Case> casos, LinkedList<Instruccion> defaultInstrucciones, int linea, int col) {
         super(new Tipo(tipoDato.VOID), linea, col);
         this.expresion = expresion;
-        this.cases = cases;
-        this.defaultCase = defaultCase;
+        this.casos = casos;
+        this.defaultInstrucciones = defaultInstrucciones;
     }
 
     @Override
     public Object interpretar(Arbol arbol, tablaSimbolos tabla) {
-        Object valor = this.expresion.interpretar(arbol, tabla);
-        if (valor instanceof Errores) {
-            return valor; // Manejar error de interpretación de expresión
+        var valorExpresion = expresion.interpretar(arbol, tabla);
+        
+        if (valorExpresion instanceof Errores) {
+            return valorExpresion;
         }
 
-        // Iterar sobre los casos
-        for (Case c : cases) {
-            Object caseValor = c.getExpresion().interpretar(arbol, tabla);
-            if (caseValor instanceof Errores) {
-                return caseValor; // Manejar error de interpretación de caso
+        for (var caso : casos) {
+            var valorCaso = caso.getExpresion().interpretar(arbol, tabla);
+            if (valorCaso instanceof Errores) {
+                return valorCaso;
             }
-            if (caseValor.equals(valor)) {
-                tablaSimbolos newTabla = new tablaSimbolos(tabla);
-                for (Instruccion instr : c.getInstrucciones()) {
-                    Object result = instr.interpretar(arbol, newTabla);
-                    if (result instanceof Errores) {
-                        return result; // Manejar error durante la ejecución de instrucciones
-                    }
+
+            if (valorExpresion.equals(valorCaso)) {
+                return caso.interpretar(arbol, tabla);
+            }
+        }
+
+        if (defaultInstrucciones != null) {
+            var newTabla = new tablaSimbolos(tabla);
+            for (var instr : defaultInstrucciones) {
+                var result = instr.interpretar(arbol, newTabla);
+                if (result instanceof Errores) {
+                    return result;
                 }
-                return null; // Retornar correctamente si se ejecutaron instrucciones del caso
             }
         }
 
-        // Si no se encontró ningún caso, ejecutar el caso por defecto (DefaultCase) si existe
-        if (defaultCase != null) {
-    tablaSimbolos newTabla = new tablaSimbolos(tabla);
-    for (Instruccion instr : defaultCase.getInstrucciones()) {
-        Object result = instr.interpretar(arbol, newTabla);
-        if (result instanceof Errores) {
-            return result; // Manejar error durante la ejecución de instrucciones del caso por defecto
-        }
+        return null; // Si no hay ningún caso que coincida y no hay cláusula default
     }
-    return null; // Retornar correctamente si se ejecutaron instrucciones del caso por defecto
-}
 
-        return null; // No se ejecutó ningún caso ni el caso por defecto
+    public LinkedList<Instruccion> getDefaultInstrucciones() {
+        return defaultInstrucciones;
     }
 }

@@ -44,6 +44,9 @@ public class IfElseIf extends Instruccion {
                 if (resultado instanceof Errores) {
                     return resultado;
                 }
+                if (resultado instanceof Continue) {
+                    return resultado;
+                }
             }
         } else {
             var condElseIf = this.condicionElseIf.interpretar(arbol, tabla);
@@ -61,6 +64,9 @@ public class IfElseIf extends Instruccion {
                     if (resultado instanceof Errores) {
                         return resultado;
                     }
+                    if (resultado instanceof Continue) {
+                    return resultado;
+                }
                 }
             }
         }

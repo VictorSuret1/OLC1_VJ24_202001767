@@ -46,7 +46,7 @@ DOSP = ":"
 
 OR = "||"
 AND = "&&"
-XOR = "^"
+XOR =  "#"
 NOT = "!"
 
 EQUALS = "=="
@@ -60,7 +60,7 @@ INCREMENTO = "++"
 DECREMENTO = "--"
 
 FLECHA = "=>"
-
+GUIONBAJO = "@"
 
 
 
@@ -69,6 +69,8 @@ ENTERO=[0-9]+
 DECIMAL=[0-9]+"."[0-9]+
 CADENA = [\"]([^\"])*[\"]
 CARACTER = [\']([^\'])*[\']
+COMENTARIOS = "//" [^\n]*
+COMENMULTI = "/*" [^*]*\*+([^/*][^*]*\*+)*"/"
 ID=[a-zA-z][a-zA-Z0-9_]*
 
 //palabras reservadas
@@ -86,7 +88,12 @@ IF = "IF"
 ELSE = "ELSE"
 ELSEIF = "ELSE IF"
 MATCH = "MATCH"
-DEFAULT = "_"
+FOR="for"
+BREAK="break"
+WHILE = "while"
+DOWHILE = "dowhile"
+DO = "do"
+CONTINUE = "continue"
 
 %%
 <YYINITIAL> {PRINTLN} {return new Symbol(sym.PRINTLN, yyline, yycolumn,yytext());}
@@ -103,6 +110,12 @@ DEFAULT = "_"
 <YYINITIAL> {ELSE} {return new Symbol(sym.ELSE, yyline, yycolumn,yytext());}
 <YYINITIAL> {ELSEIF} {return new Symbol(sym.ELSEIF, yyline, yycolumn,yytext());}
 <YYINITIAL> {MATCH} {return new Symbol(sym.MATCH, yyline, yycolumn,yytext());}
+<YYINITIAL> {FOR} {return new Symbol(sym.FOR, yyline, yycolumn,yytext());}
+<YYINITIAL> {BREAK} {return new Symbol(sym.BREAK, yyline, yycolumn,yytext());}
+<YYINITIAL> {WHILE} {return new Symbol(sym.WHILE, yyline, yycolumn,yytext());}
+<YYINITIAL> {DOWHILE} {return new Symbol(sym.DOWHILE, yyline, yycolumn,yytext());}
+<YYINITIAL> {DO} {return new Symbol(sym.DO, yyline, yycolumn,yytext());}
+<YYINITIAL> {CONTINUE} {return new Symbol(sym.CONTINUE, yyline, yycolumn,yytext());}
 
 
 <YYINITIAL> {ID} {return new Symbol(sym.ID, yyline, yycolumn,yytext());}
@@ -116,11 +129,7 @@ DEFAULT = "_"
     return new Symbol(sym.CADENA, yyline, yycolumn,cadena);
     }
 
-<YYINITIAL> {CARACTER} {
-    String caracter = yytext();
-    caracter = caracter.substring(1, caracter.length()-1);
-    return new Symbol(sym.CARACTER, yyline, yycolumn,caracter);
-    }
+
 
 <YYINITIAL> {FINCADENA} {return new Symbol(sym.FINCADENA, yyline, yycolumn,yytext());}
 <YYINITIAL> {DOSP} {return new Symbol(sym.DOSP, yyline, yycolumn,yytext());}
@@ -152,14 +161,24 @@ DEFAULT = "_"
 <YYINITIAL> {MENORQUE} {return new Symbol(sym.MENORQUE, yyline, yycolumn,yytext());}
 
 <YYINITIAL> {FLECHA} {return new Symbol(sym.FLECHA, yyline, yycolumn,yytext());}
-<YYINITIAL> {DEFAULT} {return new Symbol(sym.DEFAULT, yyline, yycolumn,yytext());}
+<YYINITIAL> {GUIONBAJO} {return new Symbol(sym.GUIONBAJO, yyline, yycolumn,yytext());}
 
 
 <YYINITIAL> {INCREMENTO} {return new Symbol(sym.INCREMENTO, yyline, yycolumn, yytext());}
 <YYINITIAL> {DECREMENTO} {return new Symbol(sym.DECREMENTO, yyline, yycolumn, yytext());}
 
+<YYINITIAL> {CARACTER} {
+    String caracter = yytext();
+    caracter = caracter.substring(1, caracter.length()-1);
+    return new Symbol(sym.CARACTER, yyline, yycolumn,caracter);
+    }
+
 <YYINITIAL> {BLANCOS} {}
+<YYINITIAL> {COMENTARIOS} {}
+<YYINITIAL> {COMENMULTI} {}
+
 
 <YYINITIAL> . {listaErrores.add(new Errores("LEXICO","El caracter "+
                 yytext()+" NO pertenece al lenguaje", yyline, yycolumn));
 }
+

@@ -43,11 +43,17 @@ public class IfElse extends Instruccion {
                 if (resultado instanceof Errores) {
                     return resultado;
                 }
+                if (resultado instanceof Continue) {
+                    return resultado;
+                }
             }
         } else {
             for (var i : this.instruccionesElse) {
                 var resultado = i.interpretar(arbol, newTabla);
                 if (resultado instanceof Errores) {
+                    return resultado;
+                }
+                if (resultado instanceof Continue) {
                     return resultado;
                 }
             }

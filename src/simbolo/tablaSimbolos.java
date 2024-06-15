@@ -4,14 +4,15 @@
  */
 package simbolo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  *
  * @author VictorS
  */
 public class tablaSimbolos {
-
     private tablaSimbolos tablaAnterior;
     private HashMap<String, Simbolo> tablaActual;
     private String nombre;
@@ -69,4 +70,6 @@ public class tablaSimbolos {
         }
         return null;
     }
+
+    
 }

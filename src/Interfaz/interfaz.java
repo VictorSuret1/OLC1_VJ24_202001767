@@ -29,7 +29,7 @@ import simbolo.Arbol;
 import simbolo.tablaSimbolos;
 import reportes.reporteErrores;
 import static reportes.reporteErrores.crearReporte;
-
+import static reportes.reporteErrores.crearTabla;
 /**
  *
  * @author VictorS
@@ -197,6 +197,33 @@ public class interfaz extends javax.swing.JFrame {
     tabCount++;
         }
     
+    private void addNewTabandSet() {
+    JTextArea texto = new JTextArea();
+    JPanel tabPanel = new JPanel();
+    tabPanel.setLayout(new BoxLayout(tabPanel, BoxLayout.Y_AXIS));
+    tabPanel.add(new JScrollPane(texto)); 
+
+    PEST.addTab("P" + tabCount, tabPanel);
+    textAreas.add(texto);
+    tabCount++;
+    
+    JFileChooser fileChooser = new JFileChooser();
+            int result = fileChooser.showOpenDialog(this);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+                try (BufferedReader reader = new BufferedReader(new FileReader(selectedFile))) {
+                    texto.setText(""); // Limpiar el JTextArea
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        texto.append(line + "\n");
+                    }
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(this, "Error al leer el archivo", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                
+            }
+        }
+    
     private void getAllTexts() {
         for (int i = 0; i < textAreas.size(); i++) {
             JTextArea textArea = textAreas.get(i);
@@ -222,34 +249,13 @@ public class interfaz extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        JTextArea texto = new JTextArea();
-                JPanel tabPanel = new JPanel();
-                tabPanel.setLayout(new BoxLayout(tabPanel, BoxLayout.Y_AXIS));
-                tabPanel.add(texto);
-
-                
-                PEST.addTab("P" + tabCount, tabPanel);
-                tabCount++;
+        addNewTabandSet();
         
-        JFileChooser fileChooser = new JFileChooser();
-            int result = fileChooser.showOpenDialog(this);
-            if (result == JFileChooser.APPROVE_OPTION) {
-                File selectedFile = fileChooser.getSelectedFile();
-                try (BufferedReader reader = new BufferedReader(new FileReader(selectedFile))) {
-                    texto.setText(""); // Limpiar el JTextArea
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        texto.append(line + "\n");
-                    }
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(this, "Error al leer el archivo", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-                
-            }
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
-String selectedTabText = getTextOfSelectedTab();
+
+        String selectedTabText = getTextOfSelectedTab();
 System.out.println("Texto del tab seleccionado: " + selectedTabText);
 
 
@@ -284,6 +290,7 @@ try {
             }
             
                  crearReporte(lista);
+                 crearTabla();
         } catch (Exception ex) {
             System.out.println("Algo salio mal");
             System.out.println(ex);

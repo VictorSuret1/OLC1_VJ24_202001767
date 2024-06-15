@@ -11,6 +11,7 @@ import simbolo.*;
  *
  * @author VictorS
  */
+
 public class If extends Instruccion {
 
     private Instruccion condicion;
@@ -38,12 +39,22 @@ public class If extends Instruccion {
         var newTabla = new tablaSimbolos(tabla);
         if ((boolean) cond) {
             for (var i : this.instrucciones) {
+                if (i instanceof Break) {
+                    return i;
+                }
                 var resultado = i.interpretar(arbol, newTabla);
+                if (resultado instanceof Break) {
+                    return resultado;
+                }
+                if (resultado instanceof Continue) {
+                    return resultado;
+                }
                 /*
                     Manejo de errores
-                */
+                 */
             }
         }
         return null;
     }
+
 }

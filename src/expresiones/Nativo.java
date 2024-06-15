@@ -25,6 +25,14 @@ public class Nativo extends Instruccion {
     public Object interpretar(Arbol arbol, tablaSimbolos tabla) {
         return this.valor;
     }
+
+    public Object getValor() {
+        return valor;
+    }
+
+    public void setValor(Object valor) {
+        this.valor = valor;
+    }
     
     
 }
