@@ -26,4 +26,60 @@ public class tabla {
         this.Fila = Linea;
         this.Columna = Columna;
     }
+
+    public String getNombre() {
+        return Nombre;
+    }
+
+    public void setNombre(String Nombre) {
+        this.Nombre = Nombre;
+    }
+
+    public String getTipo() {
+        return Tipo;
+    }
+
+    public void setTipo(String Tipo) {
+        this.Tipo = Tipo;
+    }
+
+    public String getTipo2() {
+        return Tipo2;
+    }
+
+    public void setTipo2(String Tipo2) {
+        this.Tipo2 = Tipo2;
+    }
+
+    public String getEntorno() {
+        return Entorno;
+    }
+
+    public void setEntorno(String Entorno) {
+        this.Entorno = Entorno;
+    }
+
+    public Object getValor() {
+        return Valor;
+    }
+
+    public void setValor(Object Valor) {
+        this.Valor = Valor;
+    }
+
+    public int getFila() {
+        return Fila;
+    }
+
+    public void setFila(int Fila) {
+        this.Fila = Fila;
+    }
+
+    public int getColumna() {
+        return Columna;
+    }
+
+    public void setColumna(int Columna) {
+        this.Columna = Columna;
+    }
 }

@@ -73,6 +73,7 @@ COMENTARIOS = "//" [^\n]*
 COMENMULTI = "/*" [^*]*\*+([^/*][^*]*\*+)*"/"
 ID=[a-zA-z][a-zA-Z0-9_]*
 
+
 //palabras reservadas
 PRINTLN="PRINTLN"
 TRUE = "true"
@@ -123,15 +124,7 @@ CONTINUE = "continue"
 <YYINITIAL> {DECIMAL} {return new Symbol(sym.DECIMAL, yyline, yycolumn,yytext());}
 <YYINITIAL> {ENTERO} {return new Symbol(sym.ENTERO, yyline, yycolumn,yytext());}
 
-<YYINITIAL> {CADENA} {
-    String cadena = yytext();
-    cadena = cadena.substring(1, cadena.length()-1);
-    return new Symbol(sym.CADENA, yyline, yycolumn,cadena);
-    }
 
-
-
-<YYINITIAL> {FINCADENA} {return new Symbol(sym.FINCADENA, yyline, yycolumn,yytext());}
 <YYINITIAL> {DOSP} {return new Symbol(sym.DOSP, yyline, yycolumn,yytext());}
 <YYINITIAL> {PAR1} {return new Symbol(sym.PAR1, yyline, yycolumn,yytext());}
 <YYINITIAL> {PAR2} {return new Symbol(sym.PAR2, yyline, yycolumn,yytext());}
@@ -167,12 +160,18 @@ CONTINUE = "continue"
 <YYINITIAL> {INCREMENTO} {return new Symbol(sym.INCREMENTO, yyline, yycolumn, yytext());}
 <YYINITIAL> {DECREMENTO} {return new Symbol(sym.DECREMENTO, yyline, yycolumn, yytext());}
 
+<YYINITIAL> {CADENA} {
+    String cadena = yytext();
+    cadena = cadena.substring(1, cadena.length()-1);
+    return new Symbol(sym.CADENA, yyline, yycolumn,cadena);
+    }
+
 <YYINITIAL> {CARACTER} {
     String caracter = yytext();
     caracter = caracter.substring(1, caracter.length()-1);
     return new Symbol(sym.CARACTER, yyline, yycolumn,caracter);
     }
-
+<YYINITIAL> {FINCADENA} {return new Symbol(sym.FINCADENA, yyline, yycolumn,yytext());}
 <YYINITIAL> {BLANCOS} {}
 <YYINITIAL> {COMENTARIOS} {}
 <YYINITIAL> {COMENMULTI} {}

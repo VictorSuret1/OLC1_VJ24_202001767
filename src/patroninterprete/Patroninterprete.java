@@ -20,45 +20,7 @@ import reportes.reporteErrores;
  */
 public class Patroninterprete {
     public static void main(String[] args) {
-        // TODO code application logic here
-        
-                
-        try {
-            String texto = ""
-                    + " const nota2 : double = 20.6;"
-                    + "println(nota2);"
-                    + "orubt"
-                    + ""
-                    + "println(nota2);";
-            scanner s = new scanner(new BufferedReader(new StringReader(texto)));
-            parser p = new parser(s);
-            var resultado = p.parse();
-            var ast = new Arbol((LinkedList<Instruccion>) resultado.value);
-            var tabla = new tablaSimbolos();
-            tabla.setNombre("GLOBAL");
-            ast.setConsola("");
-            LinkedList<Errores> lista = new LinkedList<>();
-            lista.addAll(s.listaErrores);
-            lista.addAll(p.listaErrores);
-            for (var a : ast.getInstrucciones()) {
-                if (a == null) {
-                    continue;
-                }
-
-                var res = a.interpretar(ast, tabla);
-                if (res instanceof Errores) {
-                    lista.add((Errores) res);
-                }
-            }
-            System.out.println(ast.getConsola());
-
-            for (var i : lista) {
-                System.out.println(i);
-            }
-
-        } catch (Exception ex) {
-            System.out.println("Algo salio mal");
-            System.out.println(ex);
-        }
+            interfaz interfaz = new interfaz();
+            interfaz.setVisible(true);
     }
 }

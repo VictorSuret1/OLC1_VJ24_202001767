@@ -15,7 +15,7 @@ import simbolo.*;
 public class Continue extends Instruccion {
 
     public Continue(int linea, int col) {
-        super(null, linea, col);
+        super(new Tipo(tipoDato.VOID), linea, col);
     }
 
     @Override

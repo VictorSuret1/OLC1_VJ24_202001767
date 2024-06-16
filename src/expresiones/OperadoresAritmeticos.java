@@ -15,5 +15,33 @@ public enum OperadoresAritmeticos {
     DIVISION,
     MODULO,
     NEGACION,
-    POTENCIA
+    POTENCIA;
+
+    public static OperadoresAritmeticos getSUMA() {
+        return SUMA;
+    }
+
+    public static OperadoresAritmeticos getRESTA() {
+        return RESTA;
+    }
+
+    public static OperadoresAritmeticos getMULTIPLICACION() {
+        return MULTIPLICACION;
+    }
+
+    public static OperadoresAritmeticos getDIVISION() {
+        return DIVISION;
+    }
+
+    public static OperadoresAritmeticos getMODULO() {
+        return MODULO;
+    }
+
+    public static OperadoresAritmeticos getNEGACION() {
+        return NEGACION;
+    }
+
+    public static OperadoresAritmeticos getPOTENCIA() {
+        return POTENCIA;
+    }
 }

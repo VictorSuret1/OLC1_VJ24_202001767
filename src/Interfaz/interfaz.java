@@ -9,9 +9,11 @@ import analisis.parser;
 import analisis.scanner;
 import excepciones.Errores;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -70,10 +72,6 @@ public class interfaz extends javax.swing.JFrame {
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem8 = new javax.swing.JMenuItem();
-        jMenu4 = new javax.swing.JMenu();
-        jMenuItem5 = new javax.swing.JMenuItem();
-        jMenuItem6 = new javax.swing.JMenuItem();
-        jMenuItem7 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -122,9 +120,19 @@ public class interfaz extends javax.swing.JFrame {
         jMenu1.add(jMenuItem2);
 
         jMenuItem3.setText("GUARDAR");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
         jMenu1.add(jMenuItem3);
 
         jMenuItem4.setText("ELIMINAR");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
         jMenu1.add(jMenuItem4);
 
         jMenuBar1.add(jMenu1);
@@ -140,24 +148,6 @@ public class interfaz extends javax.swing.JFrame {
         jMenu3.add(jMenuItem8);
 
         jMenuBar1.add(jMenu3);
-
-        jMenu4.setText("REPORTES");
-
-        jMenuItem5.setText("ERRORES");
-        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem5ActionPerformed(evt);
-            }
-        });
-        jMenu4.add(jMenuItem5);
-
-        jMenuItem6.setText("AST");
-        jMenu4.add(jMenuItem6);
-
-        jMenuItem7.setText("TABLA DE SIMBOLOS");
-        jMenu4.add(jMenuItem7);
-
-        jMenuBar1.add(jMenu4);
 
         setJMenuBar(jMenuBar1);
 
@@ -241,6 +231,42 @@ public class interfaz extends javax.swing.JFrame {
     return ""; // Retorna una cadena vacía si no se encuentra ningún texto
 }
     
+    
+    private void saveCurrentTab() {
+        int selectedIndex = PEST.getSelectedIndex();
+        if (selectedIndex >= 0 && selectedIndex < textAreas.size()) {
+            JTextArea selectedTextArea = textAreas.get(selectedIndex);
+            String content = selectedTextArea.getText();
+
+            JFileChooser fileChooser = new JFileChooser();
+            int result = fileChooser.showSaveDialog(this);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File fileToSave = fileChooser.getSelectedFile();
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileToSave))) {
+                    writer.write(content);
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(this, "Error al guardar el archivo", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "No hay pestaña seleccionada", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    
+    private void removeCurrentTab() {
+        int selectedIndex = PEST.getSelectedIndex();
+        if (selectedIndex >= 0 && selectedIndex < textAreas.size()) {
+            PEST.removeTabAt(selectedIndex);
+            textAreas.remove(selectedIndex);
+            tabCount--;
+        } else {
+            JOptionPane.showMessageDialog(this, "No hay pestaña seleccionada", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+
+    
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         
        addNewTab();
@@ -302,11 +328,14 @@ try {
 
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 
-    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        saveCurrentTab();
 
-        
-        
-    }//GEN-LAST:event_jMenuItem5ActionPerformed
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+removeCurrentTab();        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -348,15 +377,11 @@ try {
     public javax.swing.JTabbedPane PEST;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JMenuItem jMenuItem6;
-    private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
