@@ -14,6 +14,7 @@ import simbolo.*;
  * @author VictorS
  */
 public class IfElse extends Instruccion {
+
     private Instruccion condicion;
     private LinkedList<Instruccion> instruccionesIf;
     private LinkedList<Instruccion> instruccionesElse;
@@ -32,30 +33,44 @@ public class IfElse extends Instruccion {
             return cond;
         }
 
+        // ver que cond sea booleano
         if (this.condicion.tipo.getTipo() != tipoDato.BOOLEANO) {
-            return new Errores("SEMANTICO", "Expresion invalida", this.linea, this.col);
+            return new Errores("SEMANTICO", "Expresion invalida",
+                    this.linea, this.col);
         }
 
         var newTabla = new tablaSimbolos(tabla);
         if ((boolean) cond) {
             for (var i : this.instruccionesIf) {
+                if (i instanceof Break) {
+                    return i;
+                }
                 var resultado = i.interpretar(arbol, newTabla);
-                if (resultado instanceof Errores) {
+                if (resultado instanceof Break) {
                     return resultado;
                 }
                 if (resultado instanceof Continue) {
                     return resultado;
                 }
+                /*
+                    Manejo de errores
+                 */
             }
-        } else {
+        } else if (this.instruccionesElse != null) {
             for (var i : this.instruccionesElse) {
+                if (i instanceof Break) {
+                    return i;
+                }
                 var resultado = i.interpretar(arbol, newTabla);
-                if (resultado instanceof Errores) {
+                if (resultado instanceof Break) {
                     return resultado;
                 }
                 if (resultado instanceof Continue) {
                     return resultado;
                 }
+                /*
+                    Manejo de errores
+                 */
             }
         }
         return null;

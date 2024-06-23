@@ -13,7 +13,6 @@ public class Simbolo {
     private String id;
     private Object valor;
     private String mutabilidad;
-    private String entorno;
     private int linea;
     private int columna;
     

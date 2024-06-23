@@ -30,6 +30,9 @@ listaErrores = new LinkedList<>();
 %ignorecase
 
 //simbolos del sistema
+
+BRDER = \]
+BRIZQ = \[
 PAR1="("
 PAR2=")"
 LLAVE1 = "{"
@@ -63,16 +66,17 @@ FLECHA = "=>"
 GUIONBAJO = "@"
 
 
+COMA = ","
 
 BLANCOS=[\ \r\t\f\n]+
 ENTERO=[0-9]+
 DECIMAL=[0-9]+"."[0-9]+
-CADENA = [\"]([^\"])*[\"]
 CARACTER = [\']([^\'])*[\']
 COMENTARIOS = "//" [^\n]*
 COMENMULTI = "/*" [^*]*\*+([^/*][^*]*\*+)*"/"
-ID=[a-zA-z][a-zA-Z0-9_]*
 
+ID=[a-zA-z][a-zA-Z0-9_]*
+CADENA = [\"]([^\"])*[\"]
 
 //palabras reservadas
 PRINTLN="PRINTLN"
@@ -92,11 +96,15 @@ MATCH = "MATCH"
 FOR="for"
 BREAK="break"
 WHILE = "while"
-DOWHILE = "dowhile"
 DO = "do"
 CONTINUE = "continue"
+VOID = "void"
+START = "start_with"
+RETURN = "return"
 
 %%
+<YYINITIAL> {BRIZQ} {return new Symbol(sym.BRIZQ, yyline, yycolumn,yytext());}
+<YYINITIAL> {BRDER} {return new Symbol(sym.BRDER, yyline, yycolumn,yytext());}
 <YYINITIAL> {PRINTLN} {return new Symbol(sym.PRINTLN, yyline, yycolumn,yytext());}
 <YYINITIAL> {TRUE} {return new Symbol(sym.TRUE, yyline, yycolumn,yytext());}
 <YYINITIAL> {FALSE} {return new Symbol(sym.FALSE, yyline, yycolumn,yytext());}
@@ -114,9 +122,11 @@ CONTINUE = "continue"
 <YYINITIAL> {FOR} {return new Symbol(sym.FOR, yyline, yycolumn,yytext());}
 <YYINITIAL> {BREAK} {return new Symbol(sym.BREAK, yyline, yycolumn,yytext());}
 <YYINITIAL> {WHILE} {return new Symbol(sym.WHILE, yyline, yycolumn,yytext());}
-<YYINITIAL> {DOWHILE} {return new Symbol(sym.DOWHILE, yyline, yycolumn,yytext());}
 <YYINITIAL> {DO} {return new Symbol(sym.DO, yyline, yycolumn,yytext());}
 <YYINITIAL> {CONTINUE} {return new Symbol(sym.CONTINUE, yyline, yycolumn,yytext());}
+<YYINITIAL> {VOID} {return new Symbol(sym.VOID, yyline, yycolumn,yytext());}
+<YYINITIAL> {START} {return new Symbol(sym.START, yyline, yycolumn,yytext());}
+<YYINITIAL> {RETURN} {return new Symbol(sym.RETURN, yyline, yycolumn,yytext());}
 
 
 <YYINITIAL> {ID} {return new Symbol(sym.ID, yyline, yycolumn,yytext());}
@@ -155,6 +165,10 @@ CONTINUE = "continue"
 
 <YYINITIAL> {FLECHA} {return new Symbol(sym.FLECHA, yyline, yycolumn,yytext());}
 <YYINITIAL> {GUIONBAJO} {return new Symbol(sym.GUIONBAJO, yyline, yycolumn,yytext());}
+
+
+
+<YYINITIAL> {COMA} {return new Symbol(sym.COMA, yyline, yycolumn,yytext());}
 
 
 <YYINITIAL> {INCREMENTO} {return new Symbol(sym.INCREMENTO, yyline, yycolumn, yytext());}

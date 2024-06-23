@@ -5,6 +5,8 @@
 package simbolo;
 import abstracto.Instruccion;
 import excepciones.Errores;
+import instrucciones.Funcion;
+import instrucciones.Metodo;
 import java.util.LinkedList;
 /**
  *
@@ -15,12 +17,15 @@ public class Arbol {
     private String consola;
     private tablaSimbolos tablaGlobal;
     public LinkedList<Errores> errores;
+    private LinkedList<Instruccion> funciones;
 
+    
     public Arbol(LinkedList<Instruccion> instrucciones) {
         this.instrucciones = instrucciones;
         this.consola = "";
         this.tablaGlobal = new tablaSimbolos();
         this.errores = new LinkedList<>();
+        this.funciones = new LinkedList<>();
     }
 
     public LinkedList<Instruccion> getInstrucciones() {
@@ -57,5 +62,40 @@ public class Arbol {
 
     public void Print(String valor) {
         this.consola += valor + "\n";
+    }
+    
+    public LinkedList<Instruccion> getFunciones() {
+        return funciones;
+    }
+
+    public void setFunciones(LinkedList<Instruccion> funciones) {
+        this.funciones = funciones;
+    }
+
+    public void addFunciones(Instruccion funcion){
+        this.funciones.add(funcion);
+    }
+    
+    public void addFuncion(Instruccion funcionMetodo) {
+        for (var i : this.funciones) {
+            if (i instanceof Metodo && ((Metodo)i).id.equalsIgnoreCase(((Metodo) funcionMetodo).id) ||
+               i instanceof Funcion && ((Funcion)i).id.equalsIgnoreCase(((Funcion) funcionMetodo).id)) {
+                this.errores.add(new Errores("Semantico", "Ya existe una función o método con el id " + ((Metodo) funcionMetodo).id, 0, 0));
+                return;
+            }
+        }
+        this.funciones.add(funcionMetodo);
+    }
+    
+     public Instruccion getFuncion(String id) {
+        for (var i : this.funciones) {
+            if (i instanceof Metodo metodo) {
+                if (i instanceof Metodo && ((Metodo) i).id.equalsIgnoreCase(id) ||
+                i instanceof Funcion && ((Funcion) i).id.equalsIgnoreCase(id)) {
+                return i;
+            }
+            }
+        }
+        return null;
     }
 }

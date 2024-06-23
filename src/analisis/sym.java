@@ -19,7 +19,7 @@ public class sym {
   public static final int ENTERO = 3;
   public static final int XOR = 44;
   public static final int DOUBLE = 11;
-  public static final int CONTINUE = 54;
+  public static final int CONTINUE = 53;
   public static final int INT = 10;
   public static final int PRINTLN = 9;
   public static final int FOR = 50;
@@ -31,6 +31,7 @@ public class sym {
   public static final int IGUAL = 35;
   public static final int ELSEIF = 19;
   public static final int CARACTER = 5;
+  public static final int BRDER = 55;
   public static final int OR = 42;
   public static final int BOOL = 14;
   public static final int INCREMENTO = 31;
@@ -39,28 +40,32 @@ public class sym {
   public static final int ID = 6;
   public static final int EOF = 0;
   public static final int DECIMAL = 4;
+  public static final int RETURN = 59;
   public static final int TRUE = 47;
   public static final int DECREMENTO = 32;
   public static final int error = 1;
+  public static final int COMA = 56;
   public static final int CADENA = 2;
   public static final int MODULO = 29;
   public static final int MENOS = 25;
   public static final int MENOR = 38;
+  public static final int START = 58;
   public static final int BREAK = 49;
+  public static final int VOID = 57;
   public static final int MAYOR = 40;
   public static final int MENORQUE = 39;
   public static final int POTENCIA = 30;
   public static final int FLECHA = 33;
-  public static final int DOWHILE = 52;
   public static final int ELSE = 18;
   public static final int WHILE = 51;
   public static final int NOTEQUALS = 37;
   public static final int DOSP = 8;
   public static final int STRING = 12;
   public static final int FALSE = 48;
+  public static final int BRIZQ = 54;
   public static final int DIVISION = 28;
   public static final int VAR = 16;
-  public static final int DO = 53;
+  public static final int DO = 52;
   public static final int MULTIPLICACION = 27;
   public static final int MAS = 24;
   public static final String[] terminalNames = new String[] {
@@ -116,9 +121,14 @@ public class sym {
   "BREAK",
   "FOR",
   "WHILE",
-  "DOWHILE",
   "DO",
-  "CONTINUE"
+  "CONTINUE",
+  "BRIZQ",
+  "BRDER",
+  "COMA",
+  "VOID",
+  "START",
+  "RETURN"
   };
 }
 

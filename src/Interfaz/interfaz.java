@@ -8,6 +8,11 @@ import abstracto.Instruccion;
 import analisis.parser;
 import analisis.scanner;
 import excepciones.Errores;
+import instrucciones.AsignacionVar;
+import instrucciones.Declaracion;
+import instrucciones.Metodo;
+import instrucciones.Return;
+import instrucciones.StartWith;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -30,6 +35,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import simbolo.Arbol;
 import simbolo.tablaSimbolos;
 import reportes.reporteErrores;
+import instrucciones.Funcion;
 import static reportes.reporteErrores.crearReporte;
 import static reportes.reporteErrores.crearTabla;
 /**
@@ -296,20 +302,54 @@ try {
             var tabla = new tablaSimbolos();
             tabla.setNombre("GLOBAL");
             ast.setConsola("");
+            ast.setTablaGlobal(tabla);
             LinkedList<Errores> lista = new LinkedList<>();
             lista.addAll (s.listaErrores);
             lista.addAll(p.listaErrores);
+            
+            for (var a : ast.getInstrucciones()) {
+                if (a == null) {
+                    continue;
+                }
+                
+                if (a instanceof Metodo || a instanceof Funcion) {
+                     ast.addFuncion(a);
+                }  
+                // structs
+            }
+            
+            
             for (var a : ast.getInstrucciones()) {
                 if (a == null) {
                     continue;
                 }
 
-                var res = a.interpretar(ast, tabla);
-                if (res instanceof Errores) {
-                    lista.add((Errores) res);
+                if (a instanceof Declaracion || a instanceof AsignacionVar){
+                    var res = a.interpretar(ast, tabla);
+                    if (res instanceof Errores errores) {
+                        lista.add(errores);
+                    }
+                }
+                //funciones structs
+            }
+            //execute -> start_with
+            StartWith e = null;
+            for (var a : ast.getInstrucciones()) {
+                if (a == null) {
+                    continue;
+                }
+                if (a instanceof StartWith startwith) {
+                    e = startwith;
+                    break;
                 }
             }
-             
+            
+            var restultadoStart = e.interpretar(ast, tabla);
+            if(restultadoStart instanceof Errores){
+                System.out.println("Ya no sale compi1");
+            }
+            
+             System.out.println("validar alamacenamiento de func y var globales");
             jTextArea2.setText(ast.getConsola());
             for (var i : lista) {
                 System.out.println(i);
