@@ -49,6 +49,7 @@ import instrucciones.AsignacionStruct;
 import instrucciones.ToString;
 import instrucciones.Length;
 import instrucciones.Find;
+import instrucciones.Round;
 
 import excepciones.tabla;
 //expresiones
@@ -120,7 +121,7 @@ terminal START;
 terminal RETURN;
 terminal LIST,NEW,APPEND,PUNTO,REMOVE;
 terminal STRUCT,STR;
-terminal TOSTRING,LENGTH,FIND;
+terminal TOSTRING,LENGTH,FIND,ROUND;
 
 //no terminales
 nonterminal LinkedList<Instruccion> INICIO, INSTRUCCIONES;
@@ -491,5 +492,6 @@ EXPRESION ::=CASTEO:a               {: RESULT = a; :} %prec MAS
             | LENGTH PAR1 EXPRESION:a PAR2  {: RESULT = new Length(a, aleft, aright); listaTabla.add(new tabla("LENGTH", null,null, null, a.toString(), aleft, aright)); :}
             |ID:a PUNTO REMOVE PAR1 EXPRESION:b PAR2  {: RESULT = new Remove(a, b, aleft, aright); :}
             | ID:a PUNTO FIND PAR1 EXPRESION:b PAR2    {: RESULT = new Find(a, b, aleft, aright); :}
+            |ROUND PAR1 EXPRESION:a PAR2  {: RESULT = new Round(a, aleft, aright); :}
 ;
 
