@@ -50,4 +50,6 @@ public abstract class Instruccion {
 
     public abstract Object interpretar(Arbol arbol, tablaSimbolos tabla);
     
+    public abstract String generarast(Arbol arbol, String anterior);
+    
 }

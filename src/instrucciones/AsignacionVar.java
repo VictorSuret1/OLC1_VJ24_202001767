@@ -5,6 +5,8 @@
 package instrucciones;
 import abstracto.Instruccion;
 import excepciones.Errores;
+import expresiones.AccesoVector;
+import expresiones.Nativo;
 import simbolo.*;
 
 /**
@@ -27,14 +29,12 @@ public class AsignacionVar extends Instruccion {
         // Verificar si la variable existe en la tabla de símbolos
         Simbolo variable = tabla.getVariable(id);
         if (variable == null) {
-            return new Errores("SEMANTICO", "Variable no existente",
-                    this.linea, this.col);
+            return new Errores("SEMANTICO", "Variable no existente", this.linea, this.col);
         }
 
         // Verificar si se intenta modificar una constante
         if (variable.getMutabilidad().equals("CONST")) {
-            return new Errores("SEMANTICO", "No se puede modificar una variable constante",
-                    this.linea, this.col);
+            return new Errores("SEMANTICO", "No se puede modificar una variable constante", this.linea, this.col);
         }
 
         // Interpretar el nuevo valor a asignar
@@ -45,12 +45,33 @@ public class AsignacionVar extends Instruccion {
 
         // Validar tipos
         if (variable.getTipo().getTipo() != this.exp.tipo.getTipo()) {
-            return new Errores("SEMANTICO", "Tipos incorrectos en asignación",
-                    this.linea, this.col);
+            return new Errores("SEMANTICO", "Tipos incorrectos en asignación", this.linea, this.col);
         }
 
         // Asignar el nuevo valor a la variable
         variable.setValor(newValor);
         return null;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Instruccion getValor() {
+        return exp;
+    }
+
+    public void setValor(Instruccion valor) {
+        this.exp = valor;
+    }
+    
+    @Override
+    public String generarast(Arbol arbol, String anterior) {
+        return "";
+    }
+    
 }

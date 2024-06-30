@@ -4,6 +4,8 @@
  */
 package excepciones;
 
+import simbolo.Tipo;
+
 /**
  *
  * @author VictorS
@@ -43,6 +45,9 @@ public class tabla {
         this.Tipo = Tipo;
     }
 
+    
+
+   
     public String getTipo2() {
         return Tipo2;
     }

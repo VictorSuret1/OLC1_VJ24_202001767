@@ -72,5 +72,8 @@ public class AccesoVector extends Instruccion {
         this.indice = indice;
     }
     
-    
+    @Override
+    public String generarast(Arbol arbol, String anterior) {
+        return "";
+    }
 }

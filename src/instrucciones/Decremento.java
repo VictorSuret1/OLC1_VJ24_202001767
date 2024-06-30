@@ -40,4 +40,35 @@ public class Decremento extends Instruccion {
 
         return null;
     }
+    
+    @Override
+    public String generarast(Arbol arbol, String anterior) {
+        // DECREMENTO -> ID - - ;
+        String nodoPP = "n" + arbol.getContador();
+        String nodoP = "n" + arbol.getContador();
+        String nodoP1 = "n" + arbol.getContador();
+        String nodoExp = "n" + arbol.getContador();
+        String nodoP2 = "n" + arbol.getContador();
+        String nodoPc = "n" + arbol.getContador();
+        
+
+        String resultado = nodoPP + "[label=\"DECREMENTO \"];\n";
+        resultado += anterior + " -> " + nodoPP + ";\n";
+
+        
+        resultado += nodoExp + "[label=\""+id.toString()+"\"];\n";
+        resultado += nodoP1 + "[label=\"-\"];\n";
+        resultado += nodoP2 + "[label=\"-\"];\n";
+        resultado += nodoPc + "[label=\";\"];\n";
+  
+
+        resultado += nodoPP + " -> " + nodoP + ";\n";
+        resultado += nodoPP + " -> " + nodoExp + ";\n";
+        resultado += nodoPP + " -> " + nodoP1 + ";\n";
+        resultado += nodoPP + " -> " + nodoP2 + ";\n";
+        resultado += nodoPP + " -> " + nodoPc + ";\n";
+
+
+        return resultado;
+    }
 }

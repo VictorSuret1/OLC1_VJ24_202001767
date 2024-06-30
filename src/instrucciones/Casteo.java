@@ -52,4 +52,9 @@ public class Casteo extends Instruccion {
         }
         return new Errores("SEMANTICO", "Casteo inválido", this.linea, this.col);
     }
+    
+    @Override
+    public String generarast(Arbol arbol, String anterior) {
+        return "";
+    }
 }

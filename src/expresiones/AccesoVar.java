@@ -30,4 +30,10 @@ public class AccesoVar extends Instruccion {
         this.tipo.setTipo(valor.getTipo().getTipo());
         return valor.getValor();
     }
+
+@Override
+    public String generarast(Arbol arbol, String anterior) {
+        return "";
+    }
+    
 }

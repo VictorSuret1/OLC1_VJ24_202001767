@@ -47,6 +47,9 @@ public class IfElseIf extends Instruccion {
                 if (resultado instanceof Continue) {
                     return resultado;
                 }
+                if (resultado instanceof Break) {
+                    return resultado;
+                }
             }
         } else {
             var condElseIf = this.condicionElseIf.interpretar(arbol, tabla);
@@ -67,9 +70,17 @@ public class IfElseIf extends Instruccion {
                     if (resultado instanceof Continue) {
                     return resultado;
                 }
+                    if (resultado instanceof Break) {
+                    return resultado;
+                }
                 }
             }
         }
         return null;
+    }
+    
+    @Override
+    public String generarast(Arbol arbol, String anterior) {
+        return "";
     }
 }

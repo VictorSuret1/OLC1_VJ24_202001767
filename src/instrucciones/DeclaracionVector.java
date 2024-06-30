@@ -43,4 +43,51 @@ public class DeclaracionVector extends Instruccion {
         }
         return null;
     }
+    
+    @Override
+    public String generarast(Arbol arbol, String anterior) {
+        
+
+         String nodoPP = "n" + arbol.getContador();
+    String nodom = "n" + arbol.getContador();
+    String nodoi = "n" + arbol.getContador();
+    String nodod = "n" + arbol.getContador();
+    String nodoti = "n" + arbol.getContador();
+    String nodoc1 = "n" + arbol.getContador();
+    String nodoc2 = "n" + arbol.getContador();
+    String nodocig = "n" + arbol.getContador();
+    String nodocc11 = "n" + arbol.getContador();
+    String nodoccval = "n" + arbol.getContador();
+    String nodocc22 = "n" + arbol.getContador();
+    String nododp = "n" + arbol.getContador();
+
+    String resultado = nodoPP + "[label=\"DECLARACION VECTOR\"];\n";
+    resultado += anterior + " -> " + nodoPP + ";\n";
+
+    resultado += nodoPP + " -> " + nodom + ";\n";
+    resultado += nodoPP + " -> " + nodoi + ";\n";
+    resultado += nodoPP + " -> " + nodod + ";\n";
+    resultado += nodoPP + " -> " + nodoti + ";\n";
+    resultado += nodoPP + " -> " + nodoc1 + ";\n";
+    resultado += nodoPP + " -> " + nodoc2 + ";\n";
+    resultado += nodoPP + " -> " + nodocig + ";\n";
+    resultado += nodoPP + " -> " + nodocc11 + ";\n";
+    resultado += nodoPP + " -> " + nodoccval + ";\n";
+    resultado += nodoPP + " -> " + nodocc22 + ";\n";
+    resultado += nodoPP + " -> " + nododp + ";\n";
+    //<MUTABILIDAD> <ID> : <TIPO> [ ] = [ <LISTAVALORES> ] ;
+        resultado += nodom + "[label=\" "+mutabilidad.toString()+" \"];\n";
+        resultado += nodoi + "[label=\" "+ id.toString() +"  \"];\n";
+        resultado += nodod + "[label=\" : \"];\n";
+        resultado += nodoti + "[label=\" "+ tipo.getTipo().toString() +" \"];\n";
+        resultado += nodoc1 + "[label=\" [ \"];\n";
+        resultado += nodoc2 + "[label=\" ] \"];\n";
+        resultado += nodocig + "[label=\" = \"];\n";
+        resultado += nodocc11 + "[label=\" [ \"];\n";
+        resultado += nodoccval + "[label=\" "+valores.toString()+" \"];\n";
+        resultado += nodocc22 + "[label=\" ] \"];\n";
+        resultado += nododp + "[label=\" ; \"];\n";
+        
+        return resultado;
+    }
 }

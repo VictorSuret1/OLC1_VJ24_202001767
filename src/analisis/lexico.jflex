@@ -33,6 +33,7 @@ listaErrores = new LinkedList<>();
 
 BRDER = \]
 BRIZQ = \[
+PUNTO = "."
 PAR1="("
 PAR2=")"
 LLAVE1 = "{"
@@ -101,10 +102,20 @@ CONTINUE = "continue"
 VOID = "void"
 START = "start_with"
 RETURN = "return"
+LIST = "list"
+NEW = "new"
+APPEND = "append"
+REMOVE = "remove"
+STRUCT = "struct"
+STR = "str"
+TOSTRING = "tostring"
+LENGTH = "length"
+FIND = "find"
 
 %%
 <YYINITIAL> {BRIZQ} {return new Symbol(sym.BRIZQ, yyline, yycolumn,yytext());}
 <YYINITIAL> {BRDER} {return new Symbol(sym.BRDER, yyline, yycolumn,yytext());}
+<YYINITIAL> {PUNTO} {return new Symbol(sym.PUNTO, yyline, yycolumn,yytext());}
 <YYINITIAL> {PRINTLN} {return new Symbol(sym.PRINTLN, yyline, yycolumn,yytext());}
 <YYINITIAL> {TRUE} {return new Symbol(sym.TRUE, yyline, yycolumn,yytext());}
 <YYINITIAL> {FALSE} {return new Symbol(sym.FALSE, yyline, yycolumn,yytext());}
@@ -127,6 +138,15 @@ RETURN = "return"
 <YYINITIAL> {VOID} {return new Symbol(sym.VOID, yyline, yycolumn,yytext());}
 <YYINITIAL> {START} {return new Symbol(sym.START, yyline, yycolumn,yytext());}
 <YYINITIAL> {RETURN} {return new Symbol(sym.RETURN, yyline, yycolumn,yytext());}
+<YYINITIAL> {LIST} {return new Symbol(sym.LIST, yyline, yycolumn,yytext());}
+<YYINITIAL> {NEW} {return new Symbol(sym.NEW, yyline, yycolumn,yytext());}
+<YYINITIAL> {APPEND} {return new Symbol(sym.APPEND, yyline, yycolumn,yytext());}
+<YYINITIAL> {REMOVE} {return new Symbol(sym.REMOVE, yyline, yycolumn,yytext());}
+<YYINITIAL> {STRUCT} {return new Symbol(sym.STRUCT, yyline, yycolumn,yytext());}
+<YYINITIAL> {STR} {return new Symbol(sym.STR, yyline, yycolumn,yytext());}
+<YYINITIAL> {TOSTRING} {return new Symbol(sym.TOSTRING, yyline, yycolumn,yytext());}
+<YYINITIAL> {LENGTH} {return new Symbol(sym.LENGTH, yyline, yycolumn,yytext());}
+<YYINITIAL> {FIND} {return new Symbol(sym.FIND, yyline, yycolumn,yytext());}
 
 
 <YYINITIAL> {ID} {return new Symbol(sym.ID, yyline, yycolumn,yytext());}

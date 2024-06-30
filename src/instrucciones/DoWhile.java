@@ -44,9 +44,7 @@ public class DoWhile extends Instruccion {
                 if (res instanceof Errores) {
                     return res;
                 }
-                if (res instanceof Continue) {
-                    continue;
-                }
+                
             }
 
             if (continueLoop) {
@@ -65,5 +63,10 @@ public class DoWhile extends Instruccion {
         } while ((boolean) this.condicion.interpretar(arbol, tabla));
 
         return null;
+    }
+    
+    @Override
+    public String generarast(Arbol arbol, String anterior) {
+        return "";
     }
 }

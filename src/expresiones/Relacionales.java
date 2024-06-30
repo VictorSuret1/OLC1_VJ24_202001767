@@ -418,4 +418,108 @@ public Object mayor(Object comp1, Object comp2) {
             new Errores("SEMANTICO", "Relacional Invalido", this.linea, this.col);
     };
 }
+    
+    @Override
+    public String generarast(Arbol arbol, String anterior) {
+        if (this.relacional == OperadoresRelacionales.EQUALS) {
+         String nodoExp1 = "n" + arbol.getContador();
+        String nodoOp = "n" + arbol.getContador();
+        String nodoExp2 = "n" + arbol.getContador();
+
+        String resultado = anterior + " -> " + nodoExp1 + ";\n";
+        resultado += anterior + " ->" + nodoOp + ";\n";
+        resultado += anterior + " ->" + nodoExp2 + ";\n";
+
+        resultado += nodoExp1 + "[label=\"EXP\"];\n";
+        resultado += nodoOp + "[label=\"==\"];\n";
+        resultado += nodoExp2 + "[label=\"EXP\"];\n";
+        resultado += this.cond1.generarast(arbol, nodoExp1);
+        resultado += this.cond2.generarast(arbol, nodoExp2);
+        return resultado;
+        }
+        if (this.relacional == OperadoresRelacionales.NOTEQUALS) {
+         String nodoExp1 = "n" + arbol.getContador();
+        String nodoOp = "n" + arbol.getContador();
+        String nodoExp2 = "n" + arbol.getContador();
+
+        String resultado = anterior + " -> " + nodoExp1 + ";\n";
+        resultado += anterior + " ->" + nodoOp + ";\n";
+        resultado += anterior + " ->" + nodoExp2 + ";\n";
+
+        resultado += nodoExp1 + "[label=\"EXP\"];\n";
+        resultado += nodoOp + "[label=\"!=\"];\n";
+        resultado += nodoExp2 + "[label=\"EXP\"];\n";
+        resultado += this.cond1.generarast(arbol, nodoExp1);
+        resultado += this.cond2.generarast(arbol, nodoExp2);
+        return resultado;
+        }
+        if (this.relacional == OperadoresRelacionales.MAYOR) {
+         String nodoExp1 = "n" + arbol.getContador();
+        String nodoOp = "n" + arbol.getContador();
+        String nodoExp2 = "n" + arbol.getContador();
+
+        String resultado = anterior + " -> " + nodoExp1 + ";\n";
+        resultado += anterior + " ->" + nodoOp + ";\n";
+        resultado += anterior + " ->" + nodoExp2 + ";\n";
+
+        resultado += nodoExp1 + "[label=\"EXP\"];\n";
+        resultado += nodoOp + "[label=\">\"];\n";
+        resultado += nodoExp2 + "[label=\"EXP\"];\n";
+        resultado += this.cond1.generarast(arbol, nodoExp1);
+        resultado += this.cond2.generarast(arbol, nodoExp2);
+        return resultado;
+        }
+        if (this.relacional == OperadoresRelacionales.MAYORQUE) {
+         String nodoExp1 = "n" + arbol.getContador();
+        String nodoOp = "n" + arbol.getContador();
+        String nodoExp2 = "n" + arbol.getContador();
+
+        String resultado = anterior + " -> " + nodoExp1 + ";\n";
+        resultado += anterior + " ->" + nodoOp + ";\n";
+        resultado += anterior + " ->" + nodoExp2 + ";\n";
+
+        resultado += nodoExp1 + "[label=\"EXP\"];\n";
+        resultado += nodoOp + "[label=\">=\"];\n";
+        resultado += nodoExp2 + "[label=\"EXP\"];\n";
+        resultado += this.cond1.generarast(arbol, nodoExp1);
+        resultado += this.cond2.generarast(arbol, nodoExp2);
+        return resultado;
+        }
+        if (this.relacional == OperadoresRelacionales.MENOR) {
+         String nodoExp1 = "n" + arbol.getContador();
+        String nodoOp = "n" + arbol.getContador();
+        String nodoExp2 = "n" + arbol.getContador();
+
+        String resultado = anterior + " -> " + nodoExp1 + ";\n";
+        resultado += anterior + " ->" + nodoOp + ";\n";
+        resultado += anterior + " ->" + nodoExp2 + ";\n";
+
+        resultado += nodoExp1 + "[label=\"EXP\"];\n";
+        resultado += nodoOp + "[label=\"<\"];\n";
+        resultado += nodoExp2 + "[label=\"EXP\"];\n";
+        resultado += this.cond1.generarast(arbol, nodoExp1);
+        resultado += this.cond2.generarast(arbol, nodoExp2);
+        return resultado;
+        }
+        if (this.relacional == OperadoresRelacionales.MENORQUE) {
+         String nodoExp1 = "n" + arbol.getContador();
+        String nodoOp = "n" + arbol.getContador();
+        String nodoExp2 = "n" + arbol.getContador();
+
+        String resultado = anterior + " -> " + nodoExp1 + ";\n";
+        resultado += anterior + " ->" + nodoOp + ";\n";
+        resultado += anterior + " ->" + nodoExp2 + ";\n";
+
+        resultado += nodoExp1 + "[label=\"EXP\"];\n";
+        resultado += nodoOp + "[label=\"<=\"];\n";
+        resultado += nodoExp2 + "[label=\"EXP\"];\n";
+        resultado += this.cond1.generarast(arbol, nodoExp1);
+        resultado += this.cond2.generarast(arbol, nodoExp2);
+        return resultado;
+        }
+        return null;
+        
+        
+        
+    }
 }

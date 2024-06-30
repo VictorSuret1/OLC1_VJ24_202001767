@@ -5,11 +5,21 @@
 package Interfaz;
 
 import abstracto.Instruccion;
+import analisis.GraphvizHelper;
 import analisis.parser;
 import analisis.scanner;
 import excepciones.Errores;
+import expresiones.AccesoVector;
+import instrucciones.AsignacionStruct;
 import instrucciones.AsignacionVar;
+import instrucciones.AsignacionVector;
+import instrucciones.AsignacionVector2D;
 import instrucciones.Declaracion;
+import instrucciones.DeclaracionLista;
+import instrucciones.DeclaracionStruct;
+import instrucciones.DeclaracionVector;
+import instrucciones.DeclaracionVector2D;
+import instrucciones.Find;
 import instrucciones.Metodo;
 import instrucciones.Return;
 import instrucciones.StartWith;
@@ -36,8 +46,9 @@ import simbolo.Arbol;
 import simbolo.tablaSimbolos;
 import reportes.reporteErrores;
 import instrucciones.Funcion;
-import static reportes.reporteErrores.crearReporte;
-import static reportes.reporteErrores.crearTabla;
+import instrucciones.Length;
+import instrucciones.ToString;
+
 /**
  *
  * @author VictorS
@@ -312,8 +323,8 @@ try {
                     continue;
                 }
                 
-                if (a instanceof Metodo || a instanceof Funcion) {
-                     ast.addFuncion(a);
+                if (a instanceof Metodo || a instanceof Funcion ) {
+                     ast.addFunciones(a);
                 }  
                 // structs
             }
@@ -324,7 +335,10 @@ try {
                     continue;
                 }
 
-                if (a instanceof Declaracion || a instanceof AsignacionVar){
+                if (a instanceof Declaracion || a instanceof AsignacionVar || a instanceof ToString || a instanceof Length || a instanceof Find
+                         || a instanceof DeclaracionVector || a instanceof DeclaracionVector2D || a instanceof DeclaracionLista || a instanceof DeclaracionStruct
+                        ||a instanceof AsignacionVector || a instanceof AsignacionVector2D ||a instanceof AsignacionStruct
+                        ){
                     var res = a.interpretar(ast, tabla);
                     if (res instanceof Errores errores) {
                         lista.add(errores);
@@ -332,7 +346,7 @@ try {
                 }
                 //funciones structs
             }
-            //execute -> start_with
+            
             StartWith e = null;
             for (var a : ast.getInstrucciones()) {
                 if (a == null) {
@@ -344,9 +358,49 @@ try {
                 }
             }
             
-            var restultadoStart = e.interpretar(ast, tabla);
+            
+            
+            
+           var restultadoStart = e.interpretar(ast, tabla);
             if(restultadoStart instanceof Errores){
                 System.out.println("Ya no sale compi1");
+            }
+            
+            
+            //generar AST
+            String cadena = "digraph ast{\n";
+            cadena += "nINICIO[label=\"INICIO\"];\n";
+            cadena += "nINSTRUCCIONES[label=\"INSTRUCCIONES\"];\n";
+            cadena += "nINICIO -> nINSTRUCCIONES;\n";
+
+            for (var i : ast.getInstrucciones()) {
+                if (i == null) {
+                    continue;
+                }
+                String nodoAux = "n" + ast.getContador();
+                cadena += nodoAux + "[label=\"INSTRUCCION\"];\n";
+                cadena += "nINSTRUCCIONES -> " + nodoAux + ";\n";
+                cadena += i.generarast(ast, nodoAux);
+            }
+
+            cadena += "\n}";
+            System.out.println(cadena);
+            
+            // Escribir la cadena en un archivo .dot
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("ast.dot"))) {
+                writer.write(cadena);
+            } catch (IOException ex) {
+                System.out.println("Error al escribir el archivo .dot");
+                ex.printStackTrace();
+            }
+            
+            try {
+               GraphvizHelper.generatePngFromDot("ast.dot", "ast.png");
+                System.out.println("Imagen PNG generada correctamente");
+            } catch (IOException | InterruptedException ex) {
+                System.out.println("Error al generar la imagen PNG");
+                ex.printStackTrace();
+            
             }
             
              System.out.println("validar alamacenamiento de func y var globales");
@@ -355,13 +409,12 @@ try {
                 System.out.println(i);
             }
             
-                 crearReporte(lista);
-                 crearTabla();
+                 reporteErrores.crearReporte(lista);
+                 reporteErrores.crearTabla();
         } catch (Exception ex) {
             System.out.println("Algo salio mal");
             System.out.println(ex);
         }
-    
 
        
 

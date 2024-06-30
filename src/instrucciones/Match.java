@@ -61,4 +61,9 @@ public class Match extends Instruccion {
     public LinkedList<Instruccion> getDefaultInstrucciones() {
         return defaultInstrucciones;
     }
+    
+    @Override
+    public String generarast(Arbol arbol, String anterior) {
+        return "";
+    }
 }

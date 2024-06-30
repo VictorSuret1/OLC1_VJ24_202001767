@@ -69,4 +69,9 @@ public class AsignacionVector2D extends Instruccion {
         simbolo.setValor(vector2D);
         return null;
     }
+    
+    @Override
+    public String generarast(Arbol arbol, String anterior) {
+        return "";
+    }
 }

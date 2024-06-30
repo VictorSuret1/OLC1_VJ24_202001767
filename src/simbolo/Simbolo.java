@@ -13,6 +13,7 @@ public class Simbolo {
     private String id;
     private Object valor;
     private String mutabilidad;
+    private String entorno;
     private int linea;
     private int columna;
     
@@ -28,6 +29,14 @@ public class Simbolo {
         this.valor = valor;
     }
     
+    public Simbolo(Tipo tipo, String id, Object valor, String entorno, int linea, int columna) {
+        this.tipo = tipo;
+        this.id = id;
+        this.valor = valor;
+        this.entorno = entorno;
+        this.linea = linea;
+        this.columna = columna;
+    }
 
     public void setTipo(Tipo tipo) {
         this.tipo = tipo;
@@ -61,5 +70,11 @@ public class Simbolo {
         return mutabilidad;
     }
 
-    
+    public String getEntorno() {
+        return entorno;
+    }
+
+    public void setEntorno(String entorno) {
+        this.entorno = entorno;
+    }
 }

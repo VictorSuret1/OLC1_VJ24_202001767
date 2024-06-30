@@ -9,6 +9,9 @@ import simbolo.tipoDato;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+
+import simbolo.Simbolo;
+
 //instrucciones
 import instrucciones.Print;
 import instrucciones.Declaracion;
@@ -35,6 +38,17 @@ import instrucciones.Return;
 import instrucciones.AccesoVector2D;
 import instrucciones.AsignacionVector;
 import instrucciones.AsignacionVector2D;
+import instrucciones.DeclaracionLista;
+import instrucciones.Append;
+import instrucciones.AsignacionLista;
+import instrucciones.Remove;
+import instrucciones.Llamada;
+import instrucciones.DeclaracionStruct;
+import instrucciones.InstanciacionStruct;
+import instrucciones.AsignacionStruct;
+import instrucciones.ToString;
+import instrucciones.Length;
+import instrucciones.Find;
 
 import excepciones.tabla;
 //expresiones
@@ -48,6 +62,8 @@ import expresiones.OperadoresLogicos;
 import expresiones.Logicos;
 import expresiones.AccesoVar;
 import expresiones.AccesoVector;
+import expresiones.AccesoStruct;
+
 
 
 
@@ -102,6 +118,9 @@ terminal BRIZQ, BRDER,COMA;
 terminal VOID;
 terminal START;
 terminal RETURN;
+terminal LIST,NEW,APPEND,PUNTO,REMOVE;
+terminal STRUCT,STR;
+terminal TOSTRING,LENGTH,FIND;
 
 //no terminales
 nonterminal LinkedList<Instruccion> INICIO, INSTRUCCIONES;
@@ -117,7 +136,7 @@ nonterminal Instruccion CFOR, ACTUALIZA_FOR, CWHILE, CDOWHILE;
 nonterminal Instruccion BREAKK ,CONTINUEE;
 nonterminal String MUTABILIDAD;
 nonterminal Instruccion CASTEO;
-nonterminal Instruccion DECLARACIONVEC,ACCESOVEC;
+nonterminal Instruccion DECLARACIONVEC;
 nonterminal LinkedList<Object> LISTAVALORES;
 nonterminal LinkedList<LinkedList<Object>> LISTAVALORES2D;
 nonterminal Instruccion METODO;
@@ -127,6 +146,11 @@ nonterminal LinkedList<Instruccion> PARAMSCALL;
 nonterminal Instruccion RETORNO;
 nonterminal Instruccion FUNCION;
 nonterminal Instruccion ASIGNACIONVEC;
+nonterminal Instruccion DECLARACIONLISTA, APPENDLISTA,ASIGNACIONLISTA,REMOVELISTA;
+nonterminal Instruccion LLAMADA, DECLARACIONSTRUCT, INSTANCIACIONSTRUCT,ACCESOSTRUCT,ASIGNACIONSTRUCT, TO_TOSTRINGSTRING,F_LENGTH;
+nonterminal Tipo TIPO_VOID;
+nonterminal HashMap<String, Tipo> LISTA_STRUCT;
+nonterminal HashMap<String, Instruccion> VALORES_STRUCT;
 
 precedence left OR;
 precedence left AND;
@@ -164,7 +188,52 @@ INSTRUCCION ::= IMPRESION:a                     {: RESULT = a; :}
                 | STARTWITH:a                   {: RESULT = a; :}
                 | RETORNO:a                     {: RESULT = a; :}
                 | ASIGNACIONVEC:a               {: RESULT = a; :}
+                | DECLARACIONLISTA:a            {: RESULT = a; :}
+                | APPENDLISTA:a                 {: RESULT = a; :}
+                | REMOVELISTA:a                 {: RESULT = a; :}
+                | LLAMADA:a                     {:   RESULT=a;   :}
+                | FUNCION:a                     {:   RESULT=a;   :}
+                | DECLARACIONSTRUCT:a                     {:   RESULT=a;   :}
+                | INSTANCIACIONSTRUCT:a    {: RESULT = a; :}
+                | ASIGNACIONSTRUCT:a    {: RESULT = a; :}
+                | F_LENGTH:a                 {: RESULT = a; :}
                 | error  FINCADENA
+;
+
+F_LENGTH ::= LENGTH PAR1 EXPRESION:a PAR2 FINCADENA {: RESULT = new Length(a, aleft, aright); 
+                                                        listaTabla.add(new tabla("LENGTH", null,null, null, a.toString(), aleft, aright));
+:}
+;
+
+
+DECLARACIONSTRUCT ::= STRUCT LLAVE1 LISTA_STRUCT:a LLAVE2 ID:b FINCADENA
+                     {: RESULT = new DeclaracionStruct(b, a, aleft, aright); 
+    listaTabla.add(new tabla(b.toString(), null,null, "STRUCT", a.toString(), aleft, aright));
+:}
+;
+
+LISTA_STRUCT ::= LISTA_STRUCT:a FINCADENA ID:b DOSP TIPOS:c FINCADENA{: a.put(b, c); RESULT = a; :}
+                | ID:a DOSP TIPOS:b                        {: HashMap<String, Tipo> atributos = new HashMap<>(); atributos.put(a, b); RESULT = atributos; :}
+                
+                
+
+;
+
+INSTANCIACIONSTRUCT ::= MUTABILIDAD:a ID:b DOSP ID:c IGUAL LLAVE1 VALORES_STRUCT:d LLAVE2 FINCADENA
+                       {: RESULT = new InstanciacionStruct(a, b, c, d, aleft, aright); 
+                        listaTabla.add(new tabla(b.toString(), null,null, c.toString(), d.toString(), aleft, aright));    
+                        :}
+;
+
+VALORES_STRUCT ::= VALORES_STRUCT:a COMA  ID:b DOSP EXPRESION:c  {: a.put(b, c); RESULT = a; :}
+                  | ID:a DOSP EXPRESION:b                      {: HashMap<String, Instruccion> valores = new HashMap<>(); valores.put(a, b); RESULT = valores; :}
+;
+
+
+ASIGNACIONSTRUCT ::= ID:a PUNTO ID:b IGUAL EXPRESION:c FINCADENA
+                    {: RESULT = new AsignacionStruct(a, b, c, aleft, aright); 
+                        listaTabla.add(new tabla(a.toString(), null,null, b.toString(), c.toString(), aleft, aright)); 
+:}
 ;
 
 
@@ -172,13 +241,55 @@ IMPRESION ::= PRINTLN PAR1 EXPRESION:a PAR2 FINCADENA      {: RESULT = new Print
 ;
 
 
-DECLARACIONVEC ::= MUTABILIDAD:m ID:b DOSP TIPOS:a BRIZQ BRDER IGUAL BRIZQ LISTAVALORES:c BRDER FINCADENA
-                   {: RESULT = new DeclaracionVector(m, b, c, a, aleft, aright); :}
-                   |MUTABILIDAD:m ID:b DOSP TIPOS:a BRIZQ BRDER BRIZQ BRDER IGUAL BRIZQ LISTAVALORES2D:c BRDER FINCADENA
-                   {: RESULT = new DeclaracionVector2D(m, b, c, a, aleft, aright); :}
-                   
+FUNCION ::= TIPOS:a ID:b PAR1 PARAMS:p PAR2 LLAVE1 INSTRUCCIONES:c LLAVE2    {:   RESULT = new Funcion(b, p, c, a, aleft, aright);   :}
+        |  TIPOS:a ID:b PAR1 PAR2 LLAVE1 INSTRUCCIONES:c LLAVE2             {:   RESULT = new Funcion(b, new LinkedList<HashMap>(), c, a, aleft, aright);   :}
 ;
 
+
+RETORNO ::= RETURN EXPRESION:a FINCADENA    {: 
+                                              RESULT = new Return(a, a.getTipo(), aleft, aright); 
+                                           :}
+          | RETURN:a FINCADENA               {: 
+                                              RESULT = new Return(aleft, aright); 
+                                           :}
+;
+
+
+LLAMADA ::= ID:a PAR1 PARAMSCALL:b PAR2 FINCADENA               {:  RESULT= new Llamada(a, b, aleft, aright);    :}
+          | ID:a PAR1 PAR2 FINCADENA                            {:  RESULT= new Llamada(a, new LinkedList<Instruccion>(), aleft, aright);    :}    
+;
+
+DECLARACIONLISTA ::= LIST MENOR TIPOS:a MAYOR ID:b IGUAL NEW LIST PAR1 PAR2 FINCADENA
+                     {: RESULT = new DeclaracionLista(b, a,aleft, aright); 
+                        listaTabla.add(new tabla(b.toString(), a.getTipo().toString(),a.getTipo().toString(), "DECLARACION" , "LIST", aleft, aright));  
+:}
+;
+
+APPENDLISTA ::= ID:a PUNTO APPEND PAR1 EXPRESION:b PAR2 FINCADENA
+                {: RESULT = new Append(a, b, aleft, aright); 
+                listaTabla.add(new tabla(a.toString(), null,null, "DECLARACION" , b.toString(), aleft, aright));  
+:}
+;
+
+ASIGNACIONLISTA ::= ID:a BRIZQ EXPRESION:b BRDER IGUAL EXPRESION:c FINCADENA
+                    {: RESULT = new AsignacionLista(a.toString(), b, c, aleft, aright); :}   //arreglar estructura por redundancia
+;
+
+REMOVELISTA ::= ID:a PUNTO REMOVE PAR1 EXPRESION:b PAR2 FINCADENA    //mover para ser una expresion
+                {: RESULT = new Remove(a, b, aleft, aright); :}
+;
+
+DECLARACIONVEC ::= MUTABILIDAD:m ID:b DOSP TIPOS:a BRIZQ BRDER IGUAL BRIZQ LISTAVALORES:c BRDER FINCADENA
+                   {: RESULT = new DeclaracionVector(m, b, c, a, aleft, aright); 
+                    listaTabla.add(new tabla(b.toString(), a.getTipo().toString(),a.getTipo().toString(), m.toString() , c.toString(), aleft, aright));
+:}
+                   
+                   |MUTABILIDAD:m ID:b DOSP TIPOS:a BRIZQ BRDER BRIZQ BRDER IGUAL BRIZQ LISTAVALORES2D:c BRDER FINCADENA
+                   {: RESULT = new DeclaracionVector2D(m, b, c, a, aleft, aright);
+                    listaTabla.add(new tabla(b.toString(), a.getTipo().toString(),a.getTipo().toString(), m.toString() , c.toString(), aleft, aright));
+ :}
+                   
+;
 
 LISTAVALORES ::= LISTAVALORES:a COMA EXPRESION:b     {: a.add(b); RESULT = a; :}
                 | EXPRESION:a                        {: LinkedList<Object> lista = new LinkedList<>(); lista.add(a); RESULT = lista; :}
@@ -194,16 +305,16 @@ ASIGNACIONVEC ::= ID:a BRIZQ EXPRESION:b BRDER IGUAL EXPRESION:c FINCADENA
                    {: RESULT = new AsignacionVector2D(a, b, d, e, aleft, aright); :}
 ;
 
-
 DECLARACION ::= MUTABILIDAD:m ID:b DOSP TIPOS:a FINCADENA                   
-                {: RESULT = new Declaracion(m, b, null, a, aleft, aright); 
-                listaTabla.add(new tabla(b, "Variable", a.getTipo().toString(), "Declaracion", "null", aleft, aright));
+                {: 
+                listaTabla.add(new tabla(b, a.getTipo().toString(), null,"DECLARACION",null, aleft, aright));
+                RESULT = new Declaracion(m, b, null, a, aleft, aright);
                 :}
                 
                 | MUTABILIDAD:m ID:b DOSP TIPOS:a IGUAL EXPRESION:c FINCADENA 
                             {: RESULT = new Declaracion(m, b, c, a, aleft, aright); 
                             Object valor = (c instanceof Nativo) ? ((Nativo) c).getValor() : c;
-                            listaTabla.add(new tabla(b, "Variable", a.getTipo().toString(), "Declaracion", valor, aleft, aright));
+                            listaTabla.add(new tabla(b, a.getTipo().toString(), a.getTipo().toString(), "Declaracion", valor, aleft, aright));
                             :}
 
                             
@@ -211,7 +322,7 @@ DECLARACION ::= MUTABILIDAD:m ID:b DOSP TIPOS:a FINCADENA
 
 ASIGNACION ::= ID:a IGUAL EXPRESION:b FINCADENA  {: RESULT = new AsignacionVar(a, b, aleft, aright); 
                                                     Object valor = (b instanceof Nativo) ? ((Nativo) b).getValor() : b;
-                                                    listaTabla.add(new tabla(a, "Variable", null, "Asignacion", valor, aleft, aright));
+                                                    listaTabla.add(new tabla(a, null, null, "Asignacion", valor, aleft, aright));
 :}
 ;
 
@@ -220,25 +331,25 @@ TIPOS ::= INT              {: RESULT = new Tipo(tipoDato.ENTERO); :}
            | STRING          {: RESULT = new Tipo(tipoDato.CADENA); :}
            | CHAR            {: RESULT = new Tipo(tipoDato.CARACTER); :}
            | BOOL            {: RESULT = new Tipo(tipoDato.BOOLEANO); :}
-           | VOID            {: RESULT = new Tipo(tipoDato.VOID); :}
+           | STR            {: RESULT = new Tipo(tipoDato.STRUCT); :}
+           
 ;
 
 MUTABILIDAD ::= CONST {: RESULT = "CONST"; :}
               | VAR   {: RESULT = "VAR"; :}
 ;
 
-FUNCION ::= TIPOS:a ID:b PAR1 PARAMS:p PAR2 LLAVE1 INSTRUCCIONES:c LLAVE2    {:   RESULT= new Funcion(b, p, c, a, aleft, aright);   :}
-        |  TIPOS:a ID:b PAR1 PAR2 LLAVE1 INSTRUCCIONES:c LLAVE2             {:   RESULT= new Funcion(b, new LinkedList<HashMap>(), c, a, aleft, aright);   :}
-;
-
-RETORNO ::= RETURN EXPRESION:a FINCADENA    {: 
-                                              RESULT = new Return(a, a.getTipo(), aleft, aright); 
-                                           :}
+TIPO_VOID ::= VOID        {: RESULT = new Tipo(tipoDato.VOID); :}
 ;
 
 
-METODO ::= TIPOS:a ID:b PAR1 PARAMS:p PAR2 LLAVE1 INSTRUCCIONES:c LLAVE2    {:   RESULT= new Metodo(b, p, c, a, aleft, aright );   :}
-        |  TIPOS:a ID:b PAR1 PAR2 LLAVE1 INSTRUCCIONES:c LLAVE2             {:   RESULT= new Metodo(b, new LinkedList<HashMap>(), c, a, aleft, aright );   :}
+STARTWITH ::=  START ID:a PAR1 PARAMSCALL:b PAR2 FINCADENA     {:   RESULT = new StartWith(a, b, aleft, aright );   :}
+            | START ID:a PAR1 PAR2 FINCADENA                  {:   RESULT = new StartWith(a, new LinkedList<Instruccion>(), aleft, aright );   :}
+;
+
+
+METODO ::= TIPO_VOID:a ID:b PAR1 PARAMS:p PAR2 LLAVE1 INSTRUCCIONES:c LLAVE2    {:   RESULT= new Metodo(b, p, c, a, aleft, aright );   :}
+        |  TIPO_VOID:a ID:b PAR1 PAR2 LLAVE1 INSTRUCCIONES:c LLAVE2             {:   RESULT= new Metodo(b, new LinkedList<HashMap>(), c, a, aleft, aright );   :}
 ;
 
 PARAMS ::= PARAMS:a COMA TIPOS:b ID:c   {:  
@@ -256,9 +367,9 @@ PARAMS ::= PARAMS:a COMA TIPOS:b ID:c   {:
                                         :}
 ;
 
-STARTWITH ::=  START ID:a PAR1 PARAMSCALL:b PAR2 FINCADENA     {:   RESULT = new StartWith(a, b, aleft, aright );   :}
-            | START ID:a PAR1 PAR2 FINCADENA                  {:   RESULT = new StartWith(a, new LinkedList<Instruccion>(), aleft, aright );   :}
-;
+
+
+
 
 PARAMSCALL ::= PARAMSCALL:a COMA EXPRESION:e    {:  RESULT = a;
                                                     RESULT.add(e);
@@ -270,44 +381,41 @@ PARAMSCALL ::= PARAMSCALL:a COMA EXPRESION:e    {:  RESULT = a;
 
 CASTEO ::= PAR1 TIPOS:a PAR2 EXPRESION:b {: RESULT = new Casteo(a, b, aleft, aright); 
                                             Object valor = (b instanceof Nativo) ? ((Nativo) b).getValor() : b;
-                                            listaTabla.add(new tabla("Casteo",a.getTipo().toString(), a.getTipo().toString()  , "Casteo", valor, aleft, aright));
+                                            listaTabla.add(new tabla("Casteo",a.toString(), a.getTipo().toString()  , "Casteo", valor, aleft, aright));
 :} %prec PAR1
 ;
 
 
 INCREMENTOYDECREMENTO ::= ID:a INCREMENTO FINCADENA   {: RESULT = new Incremento(a, aleft, aright); 
                                                             
-                                                            listaTabla.add(new tabla(a,"Variable", "++"  , "INCREMENTO", null, aleft, aright));
+                                                            listaTabla.add(new tabla(a,null, "++"  , "INCREMENTO", null, aleft, aright));
 :}
                          | ID:a DECREMENTO FINCADENA   {: RESULT = new Decremento(a, aleft, aright); 
-                                                        listaTabla.add(new tabla(a,"Variable", "--"  , "DECREMENTO", null, aleft, aright));
+                                                        listaTabla.add(new tabla(a,null, "--"  , "DECREMENTO", null, aleft, aright));
 :}
                          |ID:a IGUAL EXPRESION:b {:   RESULT=new AsignacionVar(a, b, aleft, aright);  
                                                     Object valor = (b instanceof Nativo) ? ((Nativo) b).getValor() : b;
-                                                    listaTabla.add(new tabla(a, "Variable", b.getTipo().toString(), "Asignacion", valor, aleft, aright));
+                                                    listaTabla.add(new tabla(a, null, b.getTipo().toString(), "Asignacion", valor, aleft, aright));
 :}
 ;
 
-SIF ::= IF PAR1 EXPRESION:a PAR2 LLAVE1 INSTRUCCIONES:b LLAVE2      {:      RESULT = new If(a,b,aleft,aright);  listaTabla.add(new tabla("IF", "Sentencias de control", "IF", "bloque", null, aleft, aright));
+SIF ::= IF PAR1 EXPRESION:a PAR2 LLAVE1 INSTRUCCIONES:b LLAVE2      {:      RESULT = new If(a,b,aleft,aright);  listaTabla.add(new tabla("IF", null, "IF", "bloque", null, aleft, aright));
                                                                      :}
-        |IF PAR1 EXPRESION:a PAR2 LLAVE1 INSTRUCCIONES:b LLAVE2 ELSE LLAVE1 INSTRUCCIONES:c LLAVE2 {: RESULT = new IfElse(a, b, c, aleft, aright); listaTabla.add(new tabla("IF-ELSE", "Sentencias de control", "IF-ELSE", "bloque", null, aleft, aright));
+        |IF PAR1 EXPRESION:a PAR2 LLAVE1 INSTRUCCIONES:b LLAVE2 ELSE LLAVE1 INSTRUCCIONES:c LLAVE2 {: RESULT = new IfElse(a, b, c, aleft, aright); listaTabla.add(new tabla("IF-ELSE",null, "IF-ELSE", "bloque", null, aleft, aright));
                                                                                                         :}
-        |IF PAR1 EXPRESION:a PAR2 LLAVE1 INSTRUCCIONES:b LLAVE2 ELSEIF PAR1 EXPRESION:c PAR2 LLAVE1 INSTRUCCIONES:d LLAVE2 {: RESULT = new IfElseIf(a, b, c, d, aleft, aright); listaTabla.add(new tabla("IF-ELSE-IF", "Sentencias de control", "IF-ELSE-IF", "bloque", null, aleft, aright));
+        |IF PAR1 EXPRESION:a PAR2 LLAVE1 INSTRUCCIONES:b LLAVE2 ELSEIF PAR1 EXPRESION:c PAR2 LLAVE1 INSTRUCCIONES:d LLAVE2 {: RESULT = new IfElseIf(a, b, c, d, aleft, aright); listaTabla.add(new tabla("IF-ELSE-IF", null, "IF-ELSE-IF", "bloque", null, aleft, aright));
                                                                                                                                  :}
 ;
 
 
 MATCH_SENTENCIA ::= MATCH  EXPRESION:a  LLAVE1 CASES_LIST:b LLAVE2 {: RESULT = new Match(a, b, null, aleft, aright); 
-                    
-                    listaTabla.add(new tabla("MATCH", "Sentencias de control", "MATCH", "bloque", "Expresiones", aleft, aright));
+
                     :}
                    | MATCH  EXPRESION:a  LLAVE1 CASES_LIST:b FLECHA LLAVE1 INSTRUCCIONES:c LLAVE2 LLAVE2 {: RESULT = new Match(a, b, c, aleft, aright); 
-                    
-                   listaTabla.add(new tabla("MATCH", "Sentencias de control", "MATCH", "bloque", "Expresiones", aleft, aright));
+
                     :}
                    | MATCH  EXPRESION:a  LLAVE1 CASES_LIST:b GUIONBAJO FLECHA LLAVE1 INSTRUCCIONES:c LLAVE2 LLAVE2 {: RESULT = new Match(a, b, c, aleft, aright); 
-                   
-                    listaTabla.add(new tabla("MATCH", "Sentencias de control", "MATCH", "bloque", "Expresiones", aleft, aright));
+
                     :}
 
 ;
@@ -323,7 +431,7 @@ CASE ::= EXPRESION:a FLECHA LLAVE1 INSTRUCCIONES:b LLAVE2    {: RESULT = new Cas
 
 
 CFOR ::= FOR PAR1 ASIGNACION:a EXPRESION:b FINCADENA ACTUALIZA_FOR:c PAR2 LLAVE1 INSTRUCCIONES:d LLAVE2      {:   RESULT = new For(a, b, c, d, aleft, aright);  
-    listaTabla.add(new tabla("FOR", "Sentencias Ciclica", "FOR", "bloque", "Expresiones", aleft, aright));
+    listaTabla.add(new tabla("FOR", null, "FOR", "bloque", "Expresiones", aleft, aright));
  :}
 ;
 
@@ -339,34 +447,34 @@ CONTINUEE ::= CONTINUE:a FINCADENA  {: RESULT = new Continue(aleft, aright); :}
 ;
 
 CWHILE ::= WHILE PAR1 EXPRESION:a PAR2 LLAVE1 INSTRUCCIONES:b LLAVE2                     {: RESULT = new While(a, b, aleft, aright); 
-    listaTabla.add(new tabla("WHILE", "Sentencias Ciclica", "WHILE", "bloque", "Expresiones", aleft, aright));
+    listaTabla.add(new tabla("WHILE", null, null, "bloque", "Expresiones", aleft, aright));
 :}
 ;
 
 CDOWHILE ::= DO LLAVE1 INSTRUCCIONES:a LLAVE2 WHILE PAR1 EXPRESION:b PAR2 FINCADENA     {: RESULT = new DoWhile(b, a, aleft, aright);
-    listaTabla.add(new tabla("WHILE", "Sentencias Ciclica", "DOWHILE", "bloque", "Expresiones", aleft, aright));
+    listaTabla.add(new tabla("WHILE", null, "DOWHILE", "bloque", "Expresiones", aleft, aright));
  :}
 ;
 
 
 EXPRESION ::=CASTEO:a               {: RESULT = a; :} %prec MAS
             |MENOS EXPRESION:a               {: RESULT = new Aritmeticas(a, OperadoresAritmeticos.NEGACION, aleft, aright); :} %prec UMENOS
-            | EXPRESION:a MAS EXPRESION:b     {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.SUMA, aleft, aright); listaTabla.add(new tabla("EXPRESION", "Aritmetica", "OPERACION", "SUMA", RESULT, aleft, aright));:}
-            | EXPRESION:a MENOS EXPRESION:b   {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.RESTA, aleft, aright); listaTabla.add(new tabla("EXPRESION", "Aritmetica", "OPERACION", "MENOS", RESULT, aleft, aright));:}
-            | EXPRESION:a MULTIPLICACION EXPRESION:b   {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.MULTIPLICACION, aleft, aright); listaTabla.add(new tabla("EXPRESION", "Aritmetica", "OPERACION", "MULTIPLICACION", RESULT, aleft, aright));:}
-            | EXPRESION:a DIVISION EXPRESION:b   {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.DIVISION, aleft, aright); listaTabla.add(new tabla("EXPRESION", "Aritmetica", "OPERACION", "DIVISION", RESULT, aleft, aright));:}
-            | EXPRESION:a MODULO EXPRESION:b   {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.MODULO, aleft, aright); listaTabla.add(new tabla("EXPRESION", "Aritmetica", "OPERACION", "MODULO", RESULT, aleft, aright));:}
-            | EXPRESION:a POTENCIA EXPRESION:b   {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.POTENCIA, aleft, aright); listaTabla.add(new tabla("EXPRESION", "Aritmetica", "OPERACION", "POTENCIA", RESULT, aleft, aright));:}
-            | EXPRESION:a EQUALS EXPRESION:b {: RESULT = new Relacionales(a, b, OperadoresRelacionales.EQUALS, aleft, aright);listaTabla.add(new tabla("EXPRESION", "RELACIONAL", "OPERACION", "EQUALS", RESULT, aleft, aright));:} %prec EQUALS
-            | EXPRESION:a NOTEQUALS EXPRESION:b {: RESULT = new Relacionales(a, b, OperadoresRelacionales.NOTEQUALS, aleft, aright); listaTabla.add(new tabla("EXPRESION", "RELACIONAL", "OPERACION", "NOTEQUALS", RESULT, aleft, aright));:}
-            | EXPRESION:a MAYOR EXPRESION:b {: RESULT = new Relacionales(a, b, OperadoresRelacionales.MAYOR, aleft, aright); listaTabla.add(new tabla("EXPRESION", "RELACIONAL", "OPERACION", "MAYOR", RESULT, aleft, aright));:}
-            | EXPRESION:a MAYORQUE EXPRESION:b {: RESULT = new Relacionales(a, b, OperadoresRelacionales.MAYORQUE, aleft, aright);listaTabla.add(new tabla("EXPRESION", "RELACIONAL", "OPERACION", "MAYORQUE", RESULT, aleft, aright));:}
-            | EXPRESION:a MENOR EXPRESION:b {: RESULT = new Relacionales(a, b, OperadoresRelacionales.MENOR, aleft, aright); listaTabla.add(new tabla("EXPRESION", "RELACIONAL", "OPERACION", "MENOR", RESULT, aleft, aright));:}
-            | EXPRESION:a MENORQUE EXPRESION:b {: RESULT = new Relacionales(a, b, OperadoresRelacionales.MENORQUE, aleft, aright);listaTabla.add(new tabla("EXPRESION", "RELACIONAL", "OPERACION", "MENORQUE", RESULT, aleft, aright));:}
-            | EXPRESION:a OR EXPRESION:b {: RESULT = new Logicos(a, b, OperadoresLogicos.OR, aleft, aright); listaTabla.add(new tabla("EXPRESION", "LOGICO", "OPERACION", "OR", RESULT, aleft, aright));:}
-            | EXPRESION:a AND EXPRESION:b {: RESULT = new Logicos(a, b, OperadoresLogicos.AND, aleft, aright);listaTabla.add(new tabla("EXPRESION", "Aritmetica", "OPERACION", "AND", RESULT, aleft, aright));:}
-            | EXPRESION:a XOR EXPRESION:b {: RESULT = new Logicos(a, b, OperadoresLogicos.XOR, aleft, aright); listaTabla.add(new tabla("EXPRESION", "Aritmetica", "OPERACION", "XOR", RESULT, aleft, aright));:}
-            | NOT EXPRESION:a {: RESULT = new Logicos(a, null, OperadoresLogicos.NOT, aleft, aright); listaTabla.add(new tabla("EXPRESION", "Aritmetica", "OPERACION", "NOT", RESULT, aleft, aright));:}
+            | EXPRESION:a MAS EXPRESION:b     {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.SUMA, aleft, aright); listaTabla.add(new tabla("EXPRESION", null, "OPERACION", "SUMA", RESULT, aleft, aright));:}
+            | EXPRESION:a MENOS EXPRESION:b   {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.RESTA, aleft, aright); listaTabla.add(new tabla("EXPRESION", null, "OPERACION", "MENOS", RESULT, aleft, aright));:}
+            | EXPRESION:a MULTIPLICACION EXPRESION:b   {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.MULTIPLICACION, aleft, aright); listaTabla.add(new tabla("EXPRESION", null, "OPERACION", "MULTIPLICACION", RESULT, aleft, aright));:}
+            | EXPRESION:a DIVISION EXPRESION:b   {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.DIVISION, aleft, aright); listaTabla.add(new tabla("EXPRESION", null, "OPERACION", "DIVISION", RESULT, aleft, aright));:}
+            | EXPRESION:a MODULO EXPRESION:b   {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.MODULO, aleft, aright); listaTabla.add(new tabla("EXPRESION", null, "OPERACION", "MODULO", RESULT, aleft, aright));:}
+            | EXPRESION:a POTENCIA EXPRESION:b   {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.POTENCIA, aleft, aright); listaTabla.add(new tabla("EXPRESION", null, "OPERACION", "POTENCIA", RESULT, aleft, aright));:}
+            | EXPRESION:a EQUALS EXPRESION:b {: RESULT = new Relacionales(a, b, OperadoresRelacionales.EQUALS, aleft, aright);listaTabla.add(new tabla("EXPRESION", null, "OPERACION", "EQUALS", RESULT, aleft, aright));:} %prec EQUALS
+            | EXPRESION:a NOTEQUALS EXPRESION:b {: RESULT = new Relacionales(a, b, OperadoresRelacionales.NOTEQUALS, aleft, aright); listaTabla.add(new tabla("EXPRESION", null, "OPERACION", "NOTEQUALS", RESULT, aleft, aright));:}
+            | EXPRESION:a MAYOR EXPRESION:b {: RESULT = new Relacionales(a, b, OperadoresRelacionales.MAYOR, aleft, aright); listaTabla.add(new tabla("EXPRESION", null, "OPERACION", "MAYOR", RESULT, aleft, aright));:}
+            | EXPRESION:a MAYORQUE EXPRESION:b {: RESULT = new Relacionales(a, b, OperadoresRelacionales.MAYORQUE, aleft, aright);listaTabla.add(new tabla("EXPRESION", null, "OPERACION", "MAYORQUE", RESULT, aleft, aright));:}
+            | EXPRESION:a MENOR EXPRESION:b {: RESULT = new Relacionales(a, b, OperadoresRelacionales.MENOR, aleft, aright); listaTabla.add(new tabla("EXPRESION", null, "OPERACION", "MENOR", RESULT, aleft, aright));:}
+            | EXPRESION:a MENORQUE EXPRESION:b {: RESULT = new Relacionales(a, b, OperadoresRelacionales.MENORQUE, aleft, aright);listaTabla.add(new tabla("EXPRESION", null, "OPERACION", "MENORQUE", RESULT, aleft, aright));:}
+            | EXPRESION:a OR EXPRESION:b {: RESULT = new Logicos(a, b, OperadoresLogicos.OR, aleft, aright); listaTabla.add(new tabla("EXPRESION", null, "OPERACION", "OR", RESULT, aleft, aright));:}
+            | EXPRESION:a AND EXPRESION:b {: RESULT = new Logicos(a, b, OperadoresLogicos.AND, aleft, aright);listaTabla.add(new tabla("EXPRESION", null, "OPERACION", "AND", RESULT, aleft, aright));:}
+            | EXPRESION:a XOR EXPRESION:b {: RESULT = new Logicos(a, b, OperadoresLogicos.XOR, aleft, aright); listaTabla.add(new tabla("EXPRESION", null, "OPERACION", "XOR", RESULT, aleft, aright));:}
+            | NOT EXPRESION:a {: RESULT = new Logicos(a, null, OperadoresLogicos.NOT, aleft, aright); listaTabla.add(new tabla("EXPRESION", null, "OPERACION", "NOT", RESULT, aleft, aright));:}
             | PAR1 EXPRESION:a PAR2 {: RESULT = a; :}
             | ENTERO:a      {: RESULT = new Nativo(Integer.parseInt(a), new Tipo(tipoDato.ENTERO), aleft, aright); :}
             | DECIMAL:a     {: RESULT = new Nativo(Double.parseDouble(a), new Tipo(tipoDato.DECIMAL), aleft, aright); :}
@@ -377,6 +485,11 @@ EXPRESION ::=CASTEO:a               {: RESULT = a; :} %prec MAS
             | ID:a          {: RESULT = new AccesoVar(a, aleft, aright); :}
             | ID:a BRIZQ EXPRESION:b BRDER  {: RESULT = new AccesoVector(a, b, aleft, aright); :}
             | ID:a BRIZQ EXPRESION:b BRDER BRIZQ EXPRESION:c BRDER {: RESULT = new AccesoVector2D(a, b, c, aleft, aright); :}
-            
+            | ID:a PUNTO ID:b {: RESULT = new AccesoStruct(a, b, aleft, aright); :}
+            | LLAMADA:a  {:RESULT = a; :}
+            | TOSTRING PAR1 EXPRESION:a PAR2  {: RESULT = new ToString(a, aleft, aright); :}
+            | LENGTH PAR1 EXPRESION:a PAR2  {: RESULT = new Length(a, aleft, aright); listaTabla.add(new tabla("LENGTH", null,null, null, a.toString(), aleft, aright)); :}
+            |ID:a PUNTO REMOVE PAR1 EXPRESION:b PAR2  {: RESULT = new Remove(a, b, aleft, aright); :}
+            | ID:a PUNTO FIND PAR1 EXPRESION:b PAR2    {: RESULT = new Find(a, b, aleft, aright); :}
 ;
 

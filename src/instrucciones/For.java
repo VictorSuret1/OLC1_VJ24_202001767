@@ -54,6 +54,8 @@ public class For extends Instruccion {
                         return null; // Termina la ejecución del for por break
                     } else if (res instanceof Continue) {
                         break; // Continuar con la siguiente iteración del for
+                    } else if (res instanceof Return) {
+                        return res;
                     }
                     if (res instanceof Errores) {
                         return res;
@@ -69,4 +71,65 @@ public class For extends Instruccion {
 
         return null;
     }
+    
+    @Override
+    public String generarast(Arbol arbol, String anterior) {
+        
+    // for ( <ASIGNACIÓN> ; <CONDICIÓN> ; <ACTUALIZACIÓN> ) { <INSTRUCCIONES> }
+
+    String nodoPP = "n" + arbol.getContador();
+    String nodoFOR = "n" + arbol.getContador();
+    String nodop1 = "n" + arbol.getContador();
+    String nodoAS = "n" + arbol.getContador();
+    String nodoASI = "n" + arbol.getContador();
+    String nododp = "n" + arbol.getContador();
+    String nodoCON = "n" + arbol.getContador();
+    String nododp2 = "n" + arbol.getContador();
+    String nodoACT = "n" + arbol.getContador();
+    String nodop2 = "n" + arbol.getContador();
+    String nodoll = "n" + arbol.getContador();
+    String nodoIN = "n" + arbol.getContador();
+    String nodoll2 = "n" + arbol.getContador();
+    String nodoINSTRUC = "n" + arbol.getContador();
+
+    String resultado = nodoPP + "[label=\"FOR\"];\n";
+    resultado += anterior + " -> " + nodoPP + ";\n";
+
+    resultado += nodoFOR + "[label=\"FOR\"];\n";
+    resultado += nodop1 + "[label=\"(\"];\n";
+    resultado += nodoAS + "[label=\"ASIGNACION\"];\n";
+    resultado += nododp + "[label=\";\"];\n";
+    resultado += nodoCON + "[label=\"CONDICION\"];\n";
+    resultado += nododp2 + "[label=\";\"];\n";
+    resultado += nodoACT + "[label=\"ACTUALIZACION\"];\n";
+    resultado += nodop2 + "[label=\")\"];\n";
+    resultado += nodoll + "[label=\"{\"];\n";
+    resultado += nodoIN + "[label=\"INSTRUCCIONES\"];\n";
+    resultado += nodoll2 + "[label=\"}\"];\n";
+
+    resultado += nodoPP + " -> " + nodoFOR + ";\n";
+    resultado += nodoPP + " -> " + nodop1 + ";\n";
+    resultado += nodoPP + " -> " + nodoAS + ";\n";
+    resultado += nodoPP + " -> " + nododp + ";\n";
+    resultado += nodoPP + " -> " + nodoCON + ";\n";
+    resultado += nodoPP + " -> " + nododp2 + ";\n";
+    resultado += nodoPP + " -> " + nodoACT + ";\n";
+    resultado += nodoPP + " -> " + nodop2 + ";\n";
+    resultado += nodoPP + " -> " + nodoll + ";\n";
+    resultado += nodoPP + " -> " + nodoIN + ";\n";
+    resultado += nodoPP + " -> " + nodoll2 + ";\n";
+
+    
+
+    // Añadir las instrucciones dentro del for
+    if (instrucciones != null && !instrucciones.isEmpty()) {
+        for (Instruccion instr : instrucciones) {
+            if (instr != null) {
+                resultado += instr.generarast(arbol, nodoIN);
+            }
+        }
+    }
+
+    return resultado;
+}
 }

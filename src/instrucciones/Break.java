@@ -22,4 +22,9 @@ public class Break extends Instruccion {
     public Object interpretar(Arbol arbol, tablaSimbolos tabla) {
         return this;
     }
+    
+    @Override
+    public String generarast(Arbol arbol, String anterior) {
+        return "";
+    }
 }

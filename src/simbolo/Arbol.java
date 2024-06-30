@@ -18,7 +18,7 @@ public class Arbol {
     private tablaSimbolos tablaGlobal;
     public LinkedList<Errores> errores;
     private LinkedList<Instruccion> funciones;
-
+    public int contador;
     
     public Arbol(LinkedList<Instruccion> instrucciones) {
         this.instrucciones = instrucciones;
@@ -26,6 +26,7 @@ public class Arbol {
         this.tablaGlobal = new tablaSimbolos();
         this.errores = new LinkedList<>();
         this.funciones = new LinkedList<>();
+        this.contador = 0;
     }
 
     public LinkedList<Instruccion> getInstrucciones() {
@@ -63,7 +64,7 @@ public class Arbol {
     public void Print(String valor) {
         this.consola += valor + "\n";
     }
-    
+
     public LinkedList<Instruccion> getFunciones() {
         return funciones;
     }
@@ -75,27 +76,20 @@ public class Arbol {
     public void addFunciones(Instruccion funcion){
         this.funciones.add(funcion);
     }
-    
-    public void addFuncion(Instruccion funcionMetodo) {
+
+    public Instruccion getFuncion(String id) {
         for (var i : this.funciones) {
-            if (i instanceof Metodo && ((Metodo)i).id.equalsIgnoreCase(((Metodo) funcionMetodo).id) ||
-               i instanceof Funcion && ((Funcion)i).id.equalsIgnoreCase(((Funcion) funcionMetodo).id)) {
-                this.errores.add(new Errores("Semantico", "Ya existe una función o método con el id " + ((Metodo) funcionMetodo).id, 0, 0));
-                return;
-            }
-        }
-        this.funciones.add(funcionMetodo);
-    }
-    
-     public Instruccion getFuncion(String id) {
-        for (var i : this.funciones) {
-            if (i instanceof Metodo metodo) {
-                if (i instanceof Metodo && ((Metodo) i).id.equalsIgnoreCase(id) ||
-                i instanceof Funcion && ((Funcion) i).id.equalsIgnoreCase(id)) {
+            if (i instanceof Metodo metodo && metodo.id.equalsIgnoreCase(id)) {
                 return i;
-            }
+            } else if (i instanceof Funcion funcion && funcion.id.equalsIgnoreCase(id)) {
+                return i;
             }
         }
         return null;
+    }
+    
+    public int getContador(){
+        this.contador++;
+        return this.contador;
     }
 }

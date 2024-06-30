@@ -13,6 +13,9 @@ public class sym {
   public static final int GUIONBAJO = 46;
   public static final int CONST = 15;
   public static final int CHAR = 13;
+  public static final int FIND = 69;
+  public static final int STR = 66;
+  public static final int REMOVE = 64;
   public static final int EQUALS = 36;
   public static final int LLAVE2 = 23;
   public static final int LLAVE1 = 22;
@@ -27,6 +30,7 @@ public class sym {
   public static final int NOT = 45;
   public static final int AND = 43;
   public static final int FINCADENA = 7;
+  public static final int APPEND = 62;
   public static final int MAYORQUE = 41;
   public static final int IGUAL = 35;
   public static final int ELSEIF = 19;
@@ -42,6 +46,7 @@ public class sym {
   public static final int DECIMAL = 4;
   public static final int RETURN = 59;
   public static final int TRUE = 47;
+  public static final int NEW = 61;
   public static final int DECREMENTO = 32;
   public static final int error = 1;
   public static final int COMA = 56;
@@ -50,6 +55,7 @@ public class sym {
   public static final int MENOS = 25;
   public static final int MENOR = 38;
   public static final int START = 58;
+  public static final int TOSTRING = 67;
   public static final int BREAK = 49;
   public static final int VOID = 57;
   public static final int MAYOR = 40;
@@ -57,14 +63,18 @@ public class sym {
   public static final int POTENCIA = 30;
   public static final int FLECHA = 33;
   public static final int ELSE = 18;
+  public static final int PUNTO = 63;
   public static final int WHILE = 51;
   public static final int NOTEQUALS = 37;
+  public static final int LIST = 60;
   public static final int DOSP = 8;
   public static final int STRING = 12;
   public static final int FALSE = 48;
+  public static final int STRUCT = 65;
   public static final int BRIZQ = 54;
   public static final int DIVISION = 28;
   public static final int VAR = 16;
+  public static final int LENGTH = 68;
   public static final int DO = 52;
   public static final int MULTIPLICACION = 27;
   public static final int MAS = 24;
@@ -128,7 +138,17 @@ public class sym {
   "COMA",
   "VOID",
   "START",
-  "RETURN"
+  "RETURN",
+  "LIST",
+  "NEW",
+  "APPEND",
+  "PUNTO",
+  "REMOVE",
+  "STRUCT",
+  "STR",
+  "TOSTRING",
+  "LENGTH",
+  "FIND"
   };
 }
 

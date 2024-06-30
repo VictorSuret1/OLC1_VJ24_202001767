@@ -11,11 +11,13 @@ import java.util.LinkedList;
 import simbolo.Arbol;
 import simbolo.Tipo;
 import simbolo.tablaSimbolos;
+import simbolo.tipoDato;
 
 /**
  *
  * @author VictorS
  */
+
 public class Funcion extends Instruccion {
     public String id;
     public LinkedList<HashMap> parametros;
@@ -32,18 +34,39 @@ public class Funcion extends Instruccion {
 
     @Override
     public Object interpretar(Arbol arbol, tablaSimbolos tabla) {
-        Object resultado = null;
-        for (var i : this.instrucciones) {
-            resultado = i.interpretar(arbol, tabla);
+        for (var instruccion : this.instrucciones) {
+            var resultado = instruccion.interpretar(arbol, tabla);
+
             if (resultado instanceof Return) {
-                if (!((Return) resultado).getTipo().equals(this.tipo)) {
-                    arbol.getErrores().add(new Errores("Semantico", "El tipo de retorno no coincide con el tipo de la función", linea, col));
-                    return null;
-                }
-                return ((Return) resultado).getValor();
+            Return retorno = (Return) resultado;
+
+            // Devolver el valor del return
+            return retorno.getValor();
+        }
+
+            if (resultado instanceof Errores) {
+                arbol.getErrores().add((Errores) resultado);
+                return null;
+            }
+
+            if (instruccion instanceof Break || instruccion instanceof Continue) {
+                arbol.getErrores().add(new Errores("Semantico", "Instrucción break o continue fuera de ciclo", this.linea, this.col));
+                return null;
             }
         }
-        arbol.getErrores().add(new Errores("Semantico", "La función debe tener una instrucción de retorno", linea, col));
+
+        if (this.tipo.getTipo() != tipoDato.VOID) {
+        arbol.getErrores().add(new Errores("Semántico", "Falta instrucción return en la función: " + this.id, this.linea, this.col));
+    }
         return null;
+    }
+    
+    @Override
+    public String generarast(Arbol arbol, String anterior) {
+        String resultado = "";
+        for (var i : this.instrucciones) {
+            resultado += i.generarast(arbol, anterior);
+        }
+        return resultado;
     }
 }

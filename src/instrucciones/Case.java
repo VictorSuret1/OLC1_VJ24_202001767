@@ -42,4 +42,10 @@ public class Case extends Instruccion {
     public LinkedList<Instruccion> getInstrucciones() {
         return instrucciones;
     }
+    
+    @Override
+    public String generarast(Arbol arbol, String anterior) {
+        return "";
+    }
+    
 }

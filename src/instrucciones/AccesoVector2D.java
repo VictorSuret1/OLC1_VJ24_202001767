@@ -64,4 +64,9 @@ public class AccesoVector2D extends Instruccion {
 
         return vector2D.get(i).get(j);
     }
+    @Override
+    public String generarast(Arbol arbol, String anterior) {
+        return "";
+    }
+    
 }
