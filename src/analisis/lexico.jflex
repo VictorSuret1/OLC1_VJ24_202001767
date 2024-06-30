@@ -111,6 +111,7 @@ STR = "str"
 TOSTRING = "tostring"
 LENGTH = "length"
 FIND = "find"
+ROUND = "round"
 
 %%
 <YYINITIAL> {BRIZQ} {return new Symbol(sym.BRIZQ, yyline, yycolumn,yytext());}
@@ -147,7 +148,7 @@ FIND = "find"
 <YYINITIAL> {TOSTRING} {return new Symbol(sym.TOSTRING, yyline, yycolumn,yytext());}
 <YYINITIAL> {LENGTH} {return new Symbol(sym.LENGTH, yyline, yycolumn,yytext());}
 <YYINITIAL> {FIND} {return new Symbol(sym.FIND, yyline, yycolumn,yytext());}
-
+<YYINITIAL> {ROUND} {return new Symbol(sym.ROUND, yyline, yycolumn,yytext());}
 
 <YYINITIAL> {ID} {return new Symbol(sym.ID, yyline, yycolumn,yytext());}
 
